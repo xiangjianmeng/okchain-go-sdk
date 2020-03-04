@@ -6,8 +6,8 @@ import (
 )
 
 type MsgMultiSend struct {
-	From      types.AccAddress
-	Transfers []types.TransferUnit
+	From      types.AccAddress     `json:"from"`
+	Transfers []types.TransferUnit `json:"transfers"`
 }
 
 func NewMsgMultiSend(from types.AccAddress, transfers []types.TransferUnit) MsgMultiSend {

@@ -6,9 +6,9 @@ import (
 )
 
 type MsgMint struct {
-	Symbol string
-	Amount int64
-	Owner  types.AccAddress
+	Symbol string           `json:"symbol"`
+	Amount int64            `json:"amount"`
+	Owner  types.AccAddress `json:"owner"`
 }
 
 func NewMsgMint(symbol string, amount int64, owner types.AccAddress) MsgMint {

@@ -6,8 +6,8 @@ import (
 )
 
 type MsgCancelOrder struct {
-	Sender  types.AccAddress
-	OrderId string
+	Sender  types.AccAddress `json:"sender"`
+	OrderId string           `json:"order_id"`
 }
 
 // NewMsgCancelOrder is a constructor function for MsgCancelOrder

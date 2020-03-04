@@ -31,7 +31,7 @@ func New() *Codec {
 
 func goSDKRegisterAmino(cdc *amino.Codec) {
 	cdc.RegisterInterface((*types.Account)(nil), nil)
-	cdc.RegisterConcrete(&types.BaseAccount{}, "auth/Account", nil)
+	cdc.RegisterConcrete(&types.BaseAccount{}, "cosmos-sdk/Account", nil)
 	cdc.RegisterInterface((*types.Proposal)(nil), nil)
 	cdc.RegisterConcrete(&types.TextProposal{}, "okchain/gov/TextProposal", nil)
 	cdc.RegisterConcrete(&types.DexListProposal{}, "okchain/gov/DexListProposal", nil)
@@ -67,6 +67,6 @@ func UnmarshalListResponse(bz []byte, ptr interface{}) error {
 
 func getDataFromBaseResponse(bz []byte) []byte {
 	preIndex := bytes.Index(bz, []byte("data"))
-	sufIndex := bytes.LastIndex(bz, []byte("detail_msg"))
-	return bz[preIndex+6 : sufIndex-2]
+	//sufIndex := bytes.LastIndex(bz, []byte("detail_msg"))
+	return bz[preIndex+6 : len(bz) -1 ]
 }

@@ -6,11 +6,11 @@ import (
 )
 
 type MsgNewOrder struct {
-	Sender   types.AccAddress
-	Product  string
-	Side     string
-	Price    types.Dec
-	Quantity types.Dec
+	Sender   types.AccAddress `json:"sender"`
+	Product  string           `json:"product"`
+	Side     string           `json:"side"`
+	Price    types.Dec        `json:"price"`
+	Quantity types.Dec        `json:"quantity"`
 }
 
 func NewMsgNewOrder(sender types.AccAddress, product string, side string, price string, quantity string) MsgNewOrder {

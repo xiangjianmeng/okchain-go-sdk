@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	addr   = "okchain1mm43akh88a3qendlmlzjldf8lkeynq68r8l6ts"
-	rpcUrl = "3.13.150.20:26657"
+	addr   = "okchain1g7c3nvac7mjgn2m9mqllgat8wwd3aptdqket5k"
+	rpcUrl = "127.0.0.1:26657"
 
 )
 
@@ -28,7 +28,7 @@ func TestGetTokensInfoByAddr(t *testing.T) {
 
 func TestGetTokenInfoByAddr(t *testing.T) {
 	cli := NewClient(rpcUrl)
-	tokenInfo, err := cli.GetTokenInfoByAddr(addr, "tokt")
+	tokenInfo, err := cli.GetTokenInfoByAddr(addr, "okt")
 	assertNotEqual(t, err, nil)
 	fmt.Println(tokenInfo)
 }
@@ -44,7 +44,7 @@ func TestGetTokensInfo(t *testing.T) {
 
 func TestGetTokenInfo(t *testing.T) {
 	cli := NewClient(rpcUrl)
-	tokenInfo, err := cli.GetTokenInfo("tokt")
+	tokenInfo, err := cli.GetTokenInfo("okt")
 	assertNotEqual(t, err, nil)
 	fmt.Println(tokenInfo)
 }
@@ -60,7 +60,7 @@ func TestGetProductsInfo(t *testing.T) {
 
 func TestGetDepthbookInfo(t *testing.T) {
 	cli := NewClient(rpcUrl)
-	depthbook, err := cli.GetDepthbookInfo("xxb_tokt")
+	depthbook, err := cli.GetDepthbookInfo("xxb_okt")
 	assertNotEqual(t, err, nil)
 	for _, ask := range depthbook.Asks {
 		fmt.Println(ask)
@@ -73,7 +73,7 @@ func TestGetDepthbookInfo(t *testing.T) {
 
 func TestGetCandlesInfo(t *testing.T) {
 	cli := NewClient(rpcUrl)
-	candles, err := cli.GetCandlesInfo("xxb_tokt", 60, 100)
+	candles, err := cli.GetCandlesInfo("xxb_okt", 60, 100)
 	assertNotEqual(t, err, nil)
 	for _, line := range candles {
 		fmt.Println(line)

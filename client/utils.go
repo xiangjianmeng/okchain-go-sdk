@@ -3,6 +3,7 @@ package client
 import (
 	"errors"
 	"github.com/okex/okchain-go-sdk/common"
+	"github.com/okex/okchain-go-sdk/types"
 )
 
 const (
@@ -69,4 +70,17 @@ func checkParamsGetTransactionsInfo(addr string, type_, start, end, page, perPag
 
 	perPageRet, err = common.CheckParamsPaging(start, end, page, perPage)
 	return
+}
+
+func GetOrderIdFromResponse(result *types.TxResponse) string {
+	for i := 0 ; i < len(result.Events) ; i++ {
+		event := result.Events[i]
+		for j := 0 ; j < len(event.Attributes) ; j++ {
+			attribute := event.Attributes[j]
+			if attribute.Key == "orderId" {
+				return attribute.Value
+			}
+		}
+	}
+	return ""
 }

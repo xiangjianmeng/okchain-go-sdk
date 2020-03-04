@@ -64,5 +64,5 @@ func RegisterMsgCdc(cdc *amino.Codec) {
 	cdc.RegisterConcrete(msg.MsgMint{}, "token/TokenMint", nil)
 
 	cdc.RegisterInterface((*types.Tx)(nil), nil)
-	cdc.RegisterConcrete(StdTx{}, "auth/StdTx", nil)
+	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)
 }
