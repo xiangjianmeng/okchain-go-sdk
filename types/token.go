@@ -12,11 +12,11 @@ type CoinInfo struct {
 }
 
 type Token struct {
-	Desc           string     `json:"desc"`
+	Desc           string     `json:"description"`
 	Symbol         string     `json:"symbol"`
 	OriginalSymbol string     `json:"original_symbol"`
 	WholeName      string     `json:"whole_name"`
-	TotalSupply    int64      `json:"total_supply"`
+	TotalSupply    Dec        `json:"total_supply"`
 	Owner          AccAddress `json:"owner"`
 	Mintable       bool       `json:"mintable"`
 }

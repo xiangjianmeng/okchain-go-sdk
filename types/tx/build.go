@@ -57,11 +57,11 @@ func RegisterMsgCdc(cdc *amino.Codec) {
 	cdc.RegisterConcrete(secp256k1.PubKeySecp256k1{}, secp256k1.PubKeyAminoName, nil)
 
 	cdc.RegisterInterface((*types.Msg)(nil), nil)
-	cdc.RegisterConcrete(msg.MsgSend{}, "token/Send", nil)
-	cdc.RegisterConcrete(msg.MsgNewOrder{}, "order/new", nil)
-	cdc.RegisterConcrete(msg.MsgCancelOrder{}, "order/cancel", nil)
-	cdc.RegisterConcrete(msg.MsgMultiSend{}, "token/MultiSend", nil)
-	cdc.RegisterConcrete(msg.MsgMint{}, "token/TokenMint", nil)
+	cdc.RegisterConcrete(msg.MsgSend{}, "okchain/token/MsgTransfer", nil)
+	cdc.RegisterConcrete(msg.MsgNewOrder{}, "okchain/order/MsgNew", nil)
+	cdc.RegisterConcrete(msg.MsgCancelOrder{}, "okchain/order/MsgCancel", nil)
+	cdc.RegisterConcrete(msg.MsgMultiSend{}, "okchain/token/MsgMultiTransfer", nil)
+	cdc.RegisterConcrete(msg.MsgMint{}, "okchain/token/MsgMint", nil)
 
 	cdc.RegisterInterface((*types.Tx)(nil), nil)
 	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)
