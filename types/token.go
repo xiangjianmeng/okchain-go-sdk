@@ -12,7 +12,7 @@ type CoinInfo struct {
 }
 
 type Token struct {
-	Desc           string     `json:"desc"`
+	Desc           string     `json:"description"`
 	Symbol         string     `json:"symbol"`
 	OriginalSymbol string     `json:"original_symbol"`
 	WholeName      string     `json:"whole_name"`
