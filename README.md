@@ -20,7 +20,7 @@ There are some test modules in path `okclient` and `utils` as well. The develope
 
 Go version above 1.12 is required.
 
-The developer can install the OKChain Go SDK by `git clone` from github : https://github.com/okex/okchain-go-sdk
+The developer can install the OKChain Go SDK by `git clone` from github : https://github.com/ok-chain/gosdk
 
 ### 3. API
 

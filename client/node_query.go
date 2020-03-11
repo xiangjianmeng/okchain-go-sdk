@@ -2,8 +2,8 @@ package client
 
 import (
 	"fmt"
-	"github.com/okex/okchain-go-sdk/common/queryParams"
-	sdktypes "github.com/okex/okchain-go-sdk/types"
+	"github.com/ok-chain/gosdk/common/queryParams"
+	sdktypes "github.com/ok-chain/gosdk/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 

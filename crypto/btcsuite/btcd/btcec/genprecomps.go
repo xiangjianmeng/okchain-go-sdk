@@ -17,7 +17,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/okex/okchain-go-sdk/crypto/btcsuite/btcd/btcec"
+	"github.com/ok-chain/gosdk/crypto/btcsuite/btcd/btcec"
 )
 
 func main() {

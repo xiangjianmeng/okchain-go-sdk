@@ -3,8 +3,8 @@ package client
 import (
 	"errors"
 	"fmt"
-	"github.com/okex/okchain-go-sdk/common/queryParams"
-	"github.com/okex/okchain-go-sdk/types"
+	"github.com/ok-chain/gosdk/common/queryParams"
+	"github.com/ok-chain/gosdk/types"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"testing"
 )
