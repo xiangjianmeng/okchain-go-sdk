@@ -2,15 +2,28 @@ package utils
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/ok-chain/gosdk/common/libs/pkg/errors"
 	"github.com/ok-chain/gosdk/crypto/go-bip39"
 	"github.com/ok-chain/gosdk/crypto/keys/hd"
 	"github.com/ok-chain/gosdk/types"
 )
 
-var (
-	AddressStoreKeyPrefix = []byte{0x01}
-)
+var AddressStoreKeyPrefix = []byte{0x01}
+
+// parse validator address string to types.ValAddress
+func ParseValAddresses(valAddrsStr []string) ([]types.ValAddress, error) {
+	valLen := len(valAddrsStr)
+	valAddrs := make([]types.ValAddress, valLen)
+	var err error
+	for i := 0; i < valLen; i++ {
+		valAddrs[i], err = types.ValAddressFromBech32(valAddrsStr[i])
+		if err != nil {
+			return nil, fmt.Errorf("invalid validator address: %s", valAddrsStr[i])
+		}
+	}
+	return valAddrs, nil
+}
 
 func AddressStoreKey(addr types.AccAddress) []byte {
 	return append(AddressStoreKeyPrefix, addr.Bytes()...)

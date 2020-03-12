@@ -1,4 +1,4 @@
-package transactParams
+package transact_params
 
 import (
 	"fmt"
@@ -6,6 +6,17 @@ import (
 	"github.com/ok-chain/gosdk/crypto/keys"
 	"strings"
 )
+
+func CheckVoteParams(fromInfo keys.Info, passWd string, valAddrs []string) error {
+	if err := CheckKeyParams(fromInfo, passWd); err != nil {
+		return err
+	}
+	if len(valAddrs) == 0 {
+		return errors.New("no validator address input")
+	}
+
+	return nil
+}
 
 func CheckKeyParams(fromInfo keys.Info, passWd string) error {
 	if fromInfo == nil {

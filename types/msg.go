@@ -232,3 +232,25 @@ func (MsgUndelegate) Route() string            { return "" }
 func (MsgUndelegate) Type() string             { return "" }
 func (MsgUndelegate) ValidateBasic() Error     { return nil }
 func (MsgUndelegate) GetSigners() []AccAddress { return nil }
+
+type MsgVote struct {
+	DelAddr  AccAddress   `json:"delegator_address"`
+	ValAddrs []ValAddress `json:"validator_addresses"`
+}
+
+func NewMsgVote(delAddr AccAddress, valAddrs []ValAddress) MsgVote {
+	return MsgVote{
+		DelAddr:  delAddr,
+		ValAddrs: valAddrs,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgVote) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+func (MsgVote) Route() string            { return "" }
+func (MsgVote) Type() string             { return "" }
+func (MsgVote) ValidateBasic() Error     { return nil }
+func (MsgVote) GetSigners() []AccAddress { return nil }

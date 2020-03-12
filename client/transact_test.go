@@ -15,6 +15,11 @@ const (
 	addr     = "okchain1dcsxvxgj374dv3wt9szflf9nz6342juzzkjnlz"
 	// target address
 	addr1 = "okchain1g7c3nvac7mjgn2m9mqllgat8wwd3aptdqket5k"
+	// validator address
+	valAddr1 = "okchainvaloper10q0rk5qnyag7wfvvt7rtphlw589m7frs863s3m"
+	valAddr2 = "okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx"
+	valAddr3 = "okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5"
+	valAddr4 = "okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g"
 )
 
 func TestSend(t *testing.T) {
@@ -23,6 +28,7 @@ func TestSend(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
+
 	res, err := cli.Send(fromInfo, passWd, addr1, "10.24okt", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
@@ -34,6 +40,7 @@ func TestNewOrder(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
+
 	res, err := cli.NewOrder(fromInfo, passWd, "xxb_okt", "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
@@ -46,7 +53,8 @@ func TestCancelOrder(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000004307-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+
+	res, err := cli.CancelOrder(fromInfo, passWd, "ID1-0000000244-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -71,6 +79,26 @@ func TestUnbond(t *testing.T) {
 	assertNotEqual(t, err, nil)
 
 	res, err := cli.Unbond(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}
+
+func TestVote(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	// delegate first
+	sequence := accInfo.GetSequence()
+	_, err = cli.Delegate(fromInfo, passWd, "1024.2048okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	assertNotEqual(t, err, nil)
+
+	// vote then
+	sequence++
+	valsToVoted := []string{valAddr1, valAddr2, valAddr3, valAddr4}
+	res, err := cli.Vote(fromInfo, passWd, valsToVoted, "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }

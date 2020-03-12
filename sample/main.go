@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	//rpcUrl = "3.13.150.20:26657"
 	rpcUrl = "127.0.0.1:26657"
 	// user's name
 	name = "alice"

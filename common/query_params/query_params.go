@@ -1,4 +1,4 @@
-package queryParams
+package query_params
 
 import (
 	"encoding/json"

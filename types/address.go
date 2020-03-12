@@ -221,3 +221,121 @@ func Bech32ifyConsPub(pub crypto.PubKey) (string, error) {
 	bech32PrefixConsPub := GetConfig().GetBech32ConsensusPubPrefix()
 	return bech32.ConvertAndEncode(bech32PrefixConsPub, pub.Bytes())
 }
+
+// ----------------------------------------------------------------------------
+// validator operator
+// ----------------------------------------------------------------------------
+
+// ValAddress defines a wrapper around bytes meant to present a validator's
+// operator. When marshaled to a string or JSON, it uses Bech32.
+type ValAddress []byte
+
+func (va ValAddress) Equals(va2 Address) bool {
+	if va.Empty() && va2.Empty() {
+		return true
+	}
+
+	return bytes.Equal(va.Bytes(), va2.Bytes())
+}
+
+func (va ValAddress) Empty() bool {
+	if va == nil {
+		return true
+	}
+
+	va2 := ValAddress{}
+	return bytes.Equal(va.Bytes(), va2.Bytes())
+}
+
+func (va ValAddress) Marshal() ([]byte, error) {
+	return va, nil
+}
+
+func (va *ValAddress) Unmarshal(data []byte) error {
+	*va = data
+	return nil
+}
+
+func (va ValAddress) MarshalJSON() ([]byte, error) {
+	return json.Marshal(va.String())
+
+}
+
+func (va *ValAddress) UnmarshalJSON(data []byte) error {
+	var s string
+
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+
+	va2, err := ValAddressFromBech32(s)
+	if err != nil {
+		return err
+	}
+
+	*va = va2
+	return nil
+}
+
+func (va ValAddress) Bytes() []byte {
+	return va
+}
+
+func (va ValAddress) String() string {
+	if va.Empty() {
+		return ""
+	}
+
+	bech32PrefixValAddr := GetConfig().GetBech32ValidatorAddrPrefix()
+
+	bech32Addr, err := bech32.ConvertAndEncode(bech32PrefixValAddr, va.Bytes())
+	if err != nil {
+		panic(err)
+	}
+
+	return bech32Addr
+}
+
+func (va ValAddress) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 's':
+		s.Write([]byte(va.String()))
+	case 'p':
+		s.Write([]byte(fmt.Sprintf("%p", va)))
+	default:
+		s.Write([]byte(fmt.Sprintf("%X", []byte(va))))
+	}
+}
+
+// ValAddressFromBech32 creates a ValAddress from a Bech32 string.
+func ValAddressFromBech32(address string) (addr ValAddress, err error) {
+	if len(strings.TrimSpace(address)) == 0 {
+		return ValAddress{}, nil
+	}
+
+	bech32PrefixValAddr := GetConfig().GetBech32ValidatorAddrPrefix()
+
+	bz, err := GetFromBech32(address, bech32PrefixValAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	err = VerifyAddressFormat(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	return ValAddress(bz), nil
+}
+
+func VerifyAddressFormat(bz []byte) error {
+	verifier := GetConfig().GetAddressVerifier()
+	if verifier != nil {
+		return verifier(bz)
+	}
+	if len(bz) != AddrLen {
+		return errors.New("Incorrect address length")
+	}
+	return nil
+}

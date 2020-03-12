@@ -3,23 +3,20 @@ package client
 import (
 	"errors"
 	"fmt"
-	"github.com/ok-chain/gosdk/common/queryParams"
+	"github.com/ok-chain/gosdk/common/query_params"
 	"github.com/ok-chain/gosdk/types"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"testing"
 )
 
-
 func TestNewClient(t *testing.T) {
 	cli := NewClient(rpcUrl)
 
-	accountParams := queryParams.NewQueryAccTokenParams("","all")
-
+	accountParams := query_params.NewQueryAccTokenParams("", "all")
 
 	jsonBytes, err := cli.cdc.MarshalJSON(accountParams)
 	assertNotEqual(t, err, nil)
 
-	//fmt.Println(jsonBytes)
 	path := "custom/token/accounts/okchain1g7c3nvac7mjgn2m9mqllgat8wwd3aptdqket5k"
 	opts := rpcclient.ABCIQueryOptions{
 		Height: 0,
