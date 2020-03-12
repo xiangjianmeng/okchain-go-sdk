@@ -210,3 +210,25 @@ func (MsgDelegate) Route() string            { return "" }
 func (MsgDelegate) Type() string             { return "" }
 func (MsgDelegate) ValidateBasic() Error     { return nil }
 func (MsgDelegate) GetSigners() []AccAddress { return nil }
+
+type MsgUndelegate struct {
+	DelegatorAddress AccAddress `json:"delegator_address" `
+	Amount           Coin       `json:"quantity"`
+}
+
+func NewMsgUndelegate(delAddr AccAddress, amount Coin) MsgUndelegate {
+	return MsgUndelegate{
+		DelegatorAddress: delAddr,
+		Amount:           amount,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgUndelegate) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+func (MsgUndelegate) Route() string            { return "" }
+func (MsgUndelegate) Type() string             { return "" }
+func (MsgUndelegate) ValidateBasic() Error     { return nil }
+func (MsgUndelegate) GetSigners() []AccAddress { return nil }
