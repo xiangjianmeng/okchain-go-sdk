@@ -25,8 +25,7 @@ func init() {
 }
 
 func New() *Codec {
-	cdc := amino.NewCodec()
-	return cdc
+	return amino.NewCodec()
 }
 
 func goSDKRegisterAmino(cdc *amino.Codec) {
@@ -68,5 +67,5 @@ func UnmarshalListResponse(bz []byte, ptr interface{}) error {
 func getDataFromBaseResponse(bz []byte) []byte {
 	preIndex := bytes.Index(bz, []byte("data"))
 	//sufIndex := bytes.LastIndex(bz, []byte("detail_msg"))
-	return bz[preIndex+6 : len(bz) -1 ]
+	return bz[preIndex+6 : len(bz)-1 ]
 }

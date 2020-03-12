@@ -6,13 +6,11 @@ import (
 	"encoding/json"
 	"strings"
 
-
 	"errors"
 	"fmt"
 
 	"github.com/tendermint/tendermint/crypto"
-	//"github.com/tendermint/tendermint/crypto/encoding/amino"
-	//
+
 	"github.com/tendermint/tendermint/libs/bech32"
 )
 
@@ -57,8 +55,6 @@ type Address interface {
 	String() string
 	Format(s fmt.State, verb rune)
 }
-
-
 
 // AccAddress a wrapper around bytes meant to represent an account address.
 // When marshaled to a string or JSON, it uses Bech32.

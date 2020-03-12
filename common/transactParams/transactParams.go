@@ -2,57 +2,45 @@ package transactParams
 
 import (
 	"fmt"
+	"github.com/ok-chain/gosdk/common/libs/pkg/errors"
 	"github.com/ok-chain/gosdk/crypto/keys"
 	"strings"
 )
 
-func IsValidSendParams(fromInfo keys.Info, passWd, toAddr string) bool {
+func CheckKeyParams(fromInfo keys.Info, passWd string) error {
 	if fromInfo == nil {
-		fmt.Println("input invalid keys info")
-		return false
+		return errors.New("input invalid keys info")
 	}
 	if len(passWd) == 0 {
-		fmt.Println("no password input")
-		return false
+		return errors.New("no password input")
+	}
+
+	return nil
+}
+
+func CheckSendParams(fromInfo keys.Info, passWd, toAddr string) error {
+	if err := CheckKeyParams(fromInfo, passWd); err != nil {
+		return err
 	}
 	if len(toAddr) != 46 || !strings.HasPrefix(toAddr, "okchain") {
-		fmt.Println("input invalid receiver address")
-		return false
+		return errors.New("input invalid receiver address")
 	}
-	return true
+
+	return nil
 }
 
-func IsValidNewOrderParams(fromInfo keys.Info, passWd, product, side string) bool {
-	if fromInfo == nil {
-		fmt.Println("input invalid keys info")
-		return false
-	}
-	if len(passWd) == 0 {
-		fmt.Println("no password input")
-		return false
+func CheckNewOrderParams(fromInfo keys.Info, passWd, product, side string) error {
+	if err := CheckKeyParams(fromInfo, passWd); err != nil {
+		return err
 	}
 	if len(product) == 0 {
-		fmt.Println("no product input")
-		return false
+		return errors.New("no product input")
 	}
 	if side != "BUY" && side != "SELL" {
-		fmt.Println("side can only be \"BUY\" or \"SELL\"")
-		return false
+		return errors.New(`side can only be "BUY" or "SELL"`)
 	}
 
-	return true
-}
-
-func IsValidCancelOrderParams(fromInfo keys.Info, passWd string) bool {
-	if fromInfo == nil {
-		fmt.Println("input invalid keys info")
-		return false
-	}
-	if len(passWd) == 0 {
-		fmt.Println("no password input")
-		return false
-	}
-	return true
+	return nil
 }
 
 func checkAccuracyOfStr(num string, accuracy int) bool {

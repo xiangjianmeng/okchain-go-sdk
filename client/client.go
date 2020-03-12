@@ -10,9 +10,8 @@ import (
 	rpcCli "github.com/tendermint/tendermint/rpc/client"
 )
 
-var (
-	cdc *codec.Codec
-)
+var cdc *codec.Codec
+
 
 func init() {
 	cdc = codec.Cdc
