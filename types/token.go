@@ -36,12 +36,14 @@ type TokenPair struct {
 	TokenPairId      string `json:"token_pair_id"`
 }
 
-type Transfer struct {
-	To     string `json:"to"`
-	Amount string `json:"amount"`
-}
-
 type TransferUnit struct {
 	To    AccAddress `json:"to"`
 	Coins Coins      `json:"coins"`
+}
+
+func NewTransferUnit(addr AccAddress, coins Coins) TransferUnit {
+	return TransferUnit{
+		addr,
+		coins,
+	}
 }

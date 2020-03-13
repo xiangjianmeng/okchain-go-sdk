@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/okex/okchain-go-sdk/types"
@@ -67,30 +66,35 @@ func ParseCoin(coinStr string) (coin types.Coin, err error) {
 	return coin, nil
 }
 
-func StrToTransfers(str string) (transfers []types.TransferUnit, err error) {
-	var transfer []types.Transfer
-	err = json.Unmarshal([]byte(str), &transfer)
-	if err != nil {
-		return transfers, err
-	}
+// Example:
+// `addr1 1okt
+// 	addr2 2okt`
+func ParseTransfersStr(str string) ([]types.TransferUnit, error) {
+	strs := strings.Split(strings.TrimSpace(str), "\n")
+	transLen := len(strs)
+	transfers := make([]types.TransferUnit, transLen)
 
-	for _, trans := range transfer {
-		var t types.TransferUnit
-		to, err := types.AccAddressFromBech32(trans.To)
-		if err != nil {
-			return transfers, err
+	for i := 0; i < transLen; i++ {
+		s := strings.Split(strs[i], " ")
+		if len(s) != 2 {
+			return nil, errors.New("invalid text to parse")
 		}
-		t.To = to
-		t.Coins = AmountToCoins(trans.Amount)
-		transfers = append(transfers, t)
-	}
-	return transfers, nil
-}
+		addrStr, coinStr := s[0], s[1]
 
-func AmountToCoins(amount string) types.Coins {
-	var res types.Coins
-	res, _ = ParseCoins(amount)
-	return res
+		to, err := types.AccAddressFromBech32(addrStr)
+		if err != nil {
+			return nil, err
+		}
+
+		coins, err := ParseCoins(coinStr)
+		if err != nil {
+			return nil, err
+		}
+
+		transfers[i] = types.NewTransferUnit(to, coins)
+	}
+
+	return transfers, nil
 }
 
 func validateDenom(denom string) error {

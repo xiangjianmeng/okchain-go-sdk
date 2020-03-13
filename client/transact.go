@@ -154,12 +154,28 @@ func (cli *OKChainClient) DestroyValidator(fromInfo keys.Info, passWd string, me
 }
 
 // unjail the own validator which was jailed by slashing module
-func (cli *OKChainClient) Unjail(fromInfo keys.Info, passWd string,  memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+func (cli *OKChainClient) Unjail(fromInfo keys.Info, passWd string, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
 	}
 
 	msg := types.NewMsgUnjail(types.ValAddress(fromInfo.GetAddress()))
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+}
+
+// multi-send coins to several receivers
+func (cli *OKChainClient) MultiSend(fromInfo keys.Info, passWd string, transfers []types.TransferUnit, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	if err := transact_params.CheckTransferUnitsParams(fromInfo, passWd, transfers); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	msg := types.NewMsgMultiSend(fromInfo.GetAddress(), transfers)
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {

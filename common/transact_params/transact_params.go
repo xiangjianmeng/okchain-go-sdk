@@ -4,8 +4,28 @@ import (
 	"fmt"
 	"github.com/okex/okchain-go-sdk/common/libs/pkg/errors"
 	"github.com/okex/okchain-go-sdk/crypto/keys"
+	"github.com/okex/okchain-go-sdk/types"
 	"strings"
 )
+
+func CheckTransferUnitsParams(fromInfo keys.Info, passWd string, transfers []types.TransferUnit) error {
+	if err := CheckKeyParams(fromInfo, passWd); err != nil {
+		return err
+	}
+	transLen := len(transfers)
+	if transLen == 0 {
+		return errors.New("no receiver input")
+	}
+	for i := 0; i < 0; i++ {
+		if transfers[i].Coins.IsAllPositive() {
+			continue
+		} else {
+			return errors.New("only positive amount of coins is available")
+		}
+	}
+
+	return nil
+}
 
 func CheckVoteParams(fromInfo keys.Info, passWd string, valAddrs []string) error {
 	if err := CheckKeyParams(fromInfo, passWd); err != nil {
