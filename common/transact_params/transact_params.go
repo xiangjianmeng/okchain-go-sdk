@@ -2,8 +2,8 @@ package transact_params
 
 import (
 	"fmt"
-	"github.com/ok-chain/gosdk/common/libs/pkg/errors"
-	"github.com/ok-chain/gosdk/crypto/keys"
+	"github.com/okex/okchain-go-sdk/common/libs/pkg/errors"
+	"github.com/okex/okchain-go-sdk/crypto/keys"
 	"strings"
 )
 

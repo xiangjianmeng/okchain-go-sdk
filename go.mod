@@ -1,4 +1,4 @@
-module github.com/ok-chain/gosdk
+module github.com/okex/okchain-go-sdk
 
 require (
 	github.com/btcsuite/btcd v0.0.0-20190523000118-16327141da8c // indirect

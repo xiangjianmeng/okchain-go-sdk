@@ -2,11 +2,11 @@ package client
 
 import (
 	"fmt"
-	"github.com/ok-chain/gosdk/common/transact_params"
-	"github.com/ok-chain/gosdk/crypto/keys"
-	"github.com/ok-chain/gosdk/types"
-	"github.com/ok-chain/gosdk/types/tx"
-	"github.com/ok-chain/gosdk/utils"
+	"github.com/okex/okchain-go-sdk/common/transact_params"
+	"github.com/okex/okchain-go-sdk/crypto/keys"
+	"github.com/okex/okchain-go-sdk/types"
+	"github.com/okex/okchain-go-sdk/types/tx"
+	"github.com/okex/okchain-go-sdk/utils"
 )
 
 // broadcast mode

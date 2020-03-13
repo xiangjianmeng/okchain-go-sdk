@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/ok-chain/gosdk/client"
-	"github.com/ok-chain/gosdk/utils"
+	"github.com/okex/okchain-go-sdk/client"
+	"github.com/okex/okchain-go-sdk/utils"
 	"log"
 )
 

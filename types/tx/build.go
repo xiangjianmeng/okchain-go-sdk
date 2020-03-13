@@ -2,8 +2,8 @@ package tx
 
 import (
 	"fmt"
-	"github.com/ok-chain/gosdk/types"
-	"github.com/ok-chain/gosdk/utils"
+	"github.com/okex/okchain-go-sdk/types"
+	"github.com/okex/okchain-go-sdk/utils"
 )
 
 func buildTx(fromName, passphrase, memo string, msgs []types.Msg, accNumber, seqNumber uint64) (types.StdTx, error) {

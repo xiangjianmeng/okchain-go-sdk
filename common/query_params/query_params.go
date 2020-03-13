@@ -2,7 +2,7 @@ package query_params
 
 import (
 	"encoding/json"
-	"github.com/ok-chain/gosdk/types"
+	"github.com/okex/okchain-go-sdk/types"
 	"time"
 )
 
