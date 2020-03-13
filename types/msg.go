@@ -254,3 +254,24 @@ func (MsgVote) Route() string            { return "" }
 func (MsgVote) Type() string             { return "" }
 func (MsgVote) ValidateBasic() Error     { return nil }
 func (MsgVote) GetSigners() []AccAddress { return nil }
+
+type MsgDestroyValidator struct {
+	DelAddr AccAddress `json:"delegator_address"`
+}
+
+func NewMsgDestroyValidator(delAddr AccAddress) MsgDestroyValidator {
+	return MsgDestroyValidator{
+		DelAddr: delAddr,
+	}
+}
+
+func (msg MsgDestroyValidator) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+
+}
+
+// GetSignBytes encodes the message for signing
+func (MsgDestroyValidator) Route() string                { return "" }
+func (MsgDestroyValidator) Type() string                 { return "" }
+func (msg MsgDestroyValidator) ValidateBasic() Error     { return nil }
+func (msg MsgDestroyValidator) GetSigners() []AccAddress { return nil }

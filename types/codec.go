@@ -26,7 +26,7 @@ func RegisterMsgCdc(cdc *amino.Codec) {
 	cdc.RegisterConcrete(MsgDelegate{}, "okchain/staking/MsgDelegate", nil)
 	cdc.RegisterConcrete(MsgUndelegate{}, "okchain/staking/MsgUnDelegate", nil)
 	cdc.RegisterConcrete(MsgVote{}, "okchain/staking/MsgVote", nil)
-	//cdc.RegisterConcrete(msg.MsgDestroyValidator{}, "okchain/staking/MsgDestroyValidator", nil)
+	cdc.RegisterConcrete(MsgDestroyValidator{}, "okchain/staking/MsgDestroyValidator", nil)
 	//cdc.RegisterConcrete(msg.MsgUnjail{}, "cosmos-sdk/MsgUnjail", nil)
 
 	cdc.RegisterInterface((*Tx)(nil), nil)

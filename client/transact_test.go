@@ -20,6 +20,9 @@ const (
 	valAddr2 = "okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx"
 	valAddr3 = "okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5"
 	valAddr4 = "okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g"
+	// validator mnemonic
+	valMnemonic = "race imitate stay curtain puppy suggest spend toe old bridge sunset pride"
+	valName     = "validator"
 )
 
 func TestSend(t *testing.T) {
@@ -99,6 +102,18 @@ func TestVote(t *testing.T) {
 	sequence++
 	valsToVoted := []string{valAddr1, valAddr2, valAddr3, valAddr4}
 	res, err := cli.Vote(fromInfo, passWd, valsToVoted, "my memo", accInfo.GetAccountNumber(), sequence)
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}
+
+func TestDestroyValidator(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(valMnemonic, valName, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	res, err := cli.DestroyValidator(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }

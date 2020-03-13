@@ -136,3 +136,19 @@ func (cli *OKChainClient) Vote(fromInfo keys.Info, passWd string, valAddrsStr []
 
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
+
+// destroy the validator and unbond the min-self-delegation
+func (cli *OKChainClient) DestroyValidator(fromInfo keys.Info, passWd string, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	msg := types.NewMsgDestroyValidator(fromInfo.GetAddress())
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+}
