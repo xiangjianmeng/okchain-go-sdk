@@ -265,13 +265,34 @@ func NewMsgDestroyValidator(delAddr AccAddress) MsgDestroyValidator {
 	}
 }
 
+// GetSignBytes encodes the message for signing
 func (msg MsgDestroyValidator) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 
 }
 
+func (MsgDestroyValidator) Route() string            { return "" }
+func (MsgDestroyValidator) Type() string             { return "" }
+func (MsgDestroyValidator) ValidateBasic() Error     { return nil }
+func (MsgDestroyValidator) GetSigners() []AccAddress { return nil }
+
+type MsgUnjail struct {
+	ValidatorAddr ValAddress `json:"address"`
+}
+
+func NewMsgUnjail(validatorAddr ValAddress) MsgUnjail {
+	return MsgUnjail{
+		ValidatorAddr: validatorAddr,
+	}
+}
+
 // GetSignBytes encodes the message for signing
-func (MsgDestroyValidator) Route() string                { return "" }
-func (MsgDestroyValidator) Type() string                 { return "" }
-func (msg MsgDestroyValidator) ValidateBasic() Error     { return nil }
-func (msg MsgDestroyValidator) GetSigners() []AccAddress { return nil }
+func (msg MsgUnjail) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+
+}
+
+func (MsgUnjail) Route() string            { return "" }
+func (MsgUnjail) Type() string             { return "" }
+func (MsgUnjail) ValidateBasic() Error     { return nil }
+func (MsgUnjail) GetSigners() []AccAddress { return nil }
