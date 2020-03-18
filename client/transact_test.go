@@ -15,6 +15,10 @@ const (
 	mnemonic = "total lottery arena when pudding best candy until army spoil drill pool"
 	// target address
 	addr1 = "okchain1g7c3nvac7mjgn2m9mqllgat8wwd3aptdqket5k"
+
+	testCoin = "xxb-127"
+	baseCoin = "okt"
+	testProduct = testCoin + "_" + baseCoin
 )
 
 func TestSend(t *testing.T) {
@@ -28,25 +32,22 @@ func TestSend(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestNewOrder(t *testing.T) {
+func TestNewOrderAndCancelOrder(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
-	res, err := cli.NewOrder(fromInfo, passWd, "xxb-127_okt", "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.NewOrder(fromInfo, passWd, testProduct, "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
-	fmt.Println("orderId:", GetOrderIdListFromResponse(&res))
-}
 
-func TestCancelOrder(t *testing.T) {
-	cli := NewClient(rpcUrl)
-	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
-	assertNotEqual(t, err, nil)
-	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
-	assertNotEqual(t, err, nil)
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000002425-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	orderIdList := GetOrderIdListFromResponse(&res)
+
+	assertNotEqual(t, len(orderIdList), 1)
+	fmt.Println("orderId:", orderIdList)
+
+	res, err = cli.CancelOrder(fromInfo, passWd, orderIdList[0], "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence() + 1)
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -58,8 +59,8 @@ func TestNewOrdersAndCancelOrders(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 	items := []msg.OrderItem{
-		msg.NewOrderItem("xxb-127_okt", "BUY", "11.2", "1.23"),
-		msg.NewOrderItem("xxb-127_okt", "BUY", "11.2", "1.23"),
+		msg.NewOrderItem(testProduct, "BUY", "11.2", "1.23"),
+		msg.NewOrderItem(testProduct, "BUY", "11.2", "1.23"),
 	}
 
 	res, err := cli.NewOrders(fromInfo, items, passWd, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
