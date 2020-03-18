@@ -26,6 +26,11 @@ const (
 	transactionsInfoPath  = "custom/backend/txs"
 )
 
+// useful for subspace query
+var (
+	validatorsKey = []byte{0x21}
+)
+
 func (cli *OKChainClient) GetAccountInfoByAddr(addr string) (types.Account, error) {
 	accAddr, err := types.AccAddressFromBech32(addr)
 	if err != nil {
@@ -327,4 +332,20 @@ func (cli *OKChainClient) GetTransactionsInfo(addr string, type_, start, end, pa
 	}
 
 	return transactionsInfo, nil
+}
+
+func (cli *OKChainClient) GetValidators() ([]types.Validator, error) {
+	resKVs, err := cli.querySubspace(validatorsKey, "staking")
+	if err != nil {
+		return nil, err
+	}
+
+	var vals []types.Validator
+	for _, kv := range resKVs {
+		var val types.Validator
+		cli.cdc.MustUnmarshalBinaryLengthPrefixed(kv.Value, &val)
+		vals = append(vals, val)
+	}
+
+	return vals, nil
 }

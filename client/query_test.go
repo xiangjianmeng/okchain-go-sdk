@@ -155,6 +155,16 @@ func TestGetTransactionsInfo(t *testing.T) {
 	}
 }
 
+func TestGetValidators(t *testing.T) {
+	cli := NewClient(rpcUrl)
+
+	vals, err := cli.GetValidators()
+	assertNotEqual(t, err, nil)
+	for _, val := range vals {
+		fmt.Println(val)
+	}
+}
+
 func assertNotEqual(t *testing.T, a, b interface{}) {
 	if a != b {
 		t.Errorf("test failed: %s", a)
