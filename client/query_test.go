@@ -165,6 +165,15 @@ func TestGetValidators(t *testing.T) {
 	}
 }
 
+func TestGetValidator(t *testing.T) {
+	cli := NewClient(rpcUrl)
+
+	valAddrStr := "okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5"
+	val, err := cli.GetValidator(valAddrStr)
+	assertNotEqual(t, err, nil)
+	fmt.Println(val)
+}
+
 func assertNotEqual(t *testing.T, a, b interface{}) {
 	if a != b {
 		t.Errorf("test failed: %s", a)

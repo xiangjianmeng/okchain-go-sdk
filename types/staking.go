@@ -54,3 +54,70 @@ type Validator struct {
 	Commission              Commission    `json:"commission"`          // commission parameters
 	MinSelfDelegation       Int           `json:"min_self_delegation"` // validator's self declared minimum self delegation
 }
+
+// this is a helper struct used for JSON de- and encoding only
+type bechValidator struct {
+	OperatorAddress         ValAddress  `json:"operator_address"`    // address of the validator's operator; bech encoded in JSON
+	ConsPubKey              string      `json:"consensus_pubkey"`    // the consensus public key of the validator; bech encoded in JSON
+	Jailed                  bool        `json:"jailed"`              // has the validator been jailed from bonded status?
+	Status                  byte        `json:"status"`              // validator status (bonded/unbonding/unbonded)
+	Tokens                  Int         `json:"tokens"`              // delegated tokens (incl. self-delegation)
+	DelegatorShares         Dec         `json:"delegator_shares"`    // total shares issued to a validator's delegators
+	Description             Description `json:"description"`         // description terms for the validator
+	UnbondingHeight         int64       `json:"unbonding_height" `   // if unbonding, height at which this validator has begun unbonding
+	UnbondingCompletionTime time.Time   `json:"unbonding_time"`      // if unbonding, min time for the validator to complete unbonding
+	Commission              Commission  `json:"commission"`          // commission parameters
+	MinSelfDelegation       Int         `json:"min_self_delegation"` // validator's self declared minimum self delegation
+}
+
+// UnmarshalJSON unmarshals the validator from JSON using Bech32
+func (v *Validator) UnmarshalJSON(data []byte) error {
+	bv := &bechValidator{}
+	if err := MsgCdc.UnmarshalJSON(data, bv); err != nil {
+		return err
+	}
+	consPubKey, err := GetConsPubKeyBech32(bv.ConsPubKey)
+	if err != nil {
+		return err
+	}
+	*v = Validator{
+		OperatorAddress:         bv.OperatorAddress,
+		ConsPubKey:              consPubKey,
+		Jailed:                  bv.Jailed,
+		Tokens:                  bv.Tokens,
+		Status:                  bv.Status,
+		DelegatorShares:         bv.DelegatorShares,
+		Description:             bv.Description,
+		UnbondingHeight:         bv.UnbondingHeight,
+		UnbondingCompletionTime: bv.UnbondingCompletionTime,
+		Commission:              bv.Commission,
+		MinSelfDelegation:       bv.MinSelfDelegation,
+	}
+	return nil
+}
+
+func (v *Validator) Standardize() StandardizedValidator {
+	return StandardizedValidator{
+		v.OperatorAddress,
+		v.ConsPubKey,
+		v.Jailed,
+		v.Status,
+		v.DelegatorShares,
+		v.Description,
+		v.UnbondingHeight,
+		v.UnbondingCompletionTime,
+		v.MinSelfDelegation.StandardizeToDec(),
+	}
+}
+
+type StandardizedValidator struct {
+	OperatorAddress         ValAddress    `json:"operator_address"`    // address of the validator's operator; bech encoded in JSON
+	ConsPubKey              crypto.PubKey `json:"consensus_pubkey"`    // the consensus public key of the validator; bech encoded in JSON
+	Jailed                  bool          `json:"jailed"`              // has the validator been jailed from bonded status?
+	Status                  byte          `json:"status"`              // validator status (bonded/unbonding/unbonded)
+	DelegatorShares         Dec           `json:"delegator_shares"`    // total shares issued to a validator's delegators
+	Description             Description   `json:"description"`         // description terms for the validator
+	UnbondingHeight         int64         `json:"unbonding_height" `   // if unbonding, height at which this validator has begun unbonding
+	UnbondingCompletionTime time.Time     `json:"unbonding_time"`      // if unbonding, min time for the validator to complete unbonding
+	MinSelfDelegation       Dec           `json:"min_self_delegation"` // validator's self declared minimum self delegation
+}

@@ -24,6 +24,7 @@ const (
 	closedOrdersPath      = "custom/backend/orders/closed"
 	dealsInfoPath         = "custom/backend/deals"
 	transactionsInfoPath  = "custom/backend/txs"
+	validatorPath         = "custom/staking/validator"
 )
 
 // useful for subspace query
@@ -334,18 +335,44 @@ func (cli *OKChainClient) GetTransactionsInfo(addr string, type_, start, end, pa
 	return transactionsInfo, nil
 }
 
-func (cli *OKChainClient) GetValidators() ([]types.Validator, error) {
+func (cli *OKChainClient) GetValidators() ([]types.StandardizedValidator, error) {
 	resKVs, err := cli.querySubspace(validatorsKey, "staking")
 	if err != nil {
 		return nil, err
 	}
 
-	var vals []types.Validator
+	var standardVals []types.StandardizedValidator
 	for _, kv := range resKVs {
 		var val types.Validator
 		cli.cdc.MustUnmarshalBinaryLengthPrefixed(kv.Value, &val)
-		vals = append(vals, val)
+		standardVals = append(standardVals, val.Standardize())
 	}
 
-	return vals, nil
+	return standardVals, nil
+}
+
+func (cli *OKChainClient) GetValidator(valAddrStr string) (types.StandardizedValidator, error) {
+	var standardVal types.StandardizedValidator
+	valAddr, err := types.ValAddressFromBech32(valAddrStr)
+	if err != nil {
+		return standardVal, err
+	}
+
+	params := query_params.NewQueryValidatorParams(valAddr)
+	jsonBytes, err := cli.cdc.MarshalJSON(params)
+	if err != nil {
+		return standardVal, fmt.Errorf("error : QueryValidatorParams failed in json marshal : %s", err.Error())
+	}
+
+	res, err := cli.query(validatorPath, jsonBytes)
+	if err != nil {
+		return standardVal, fmt.Errorf("ok client query error : %s", err.Error())
+	}
+
+	var val types.Validator
+	if err := cli.cdc.UnmarshalJSON(res, &val); err != nil {
+		return standardVal, fmt.Errorf("err : %s", err.Error())
+	}
+
+	return val.Standardize(), nil
 }

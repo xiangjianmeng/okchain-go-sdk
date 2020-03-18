@@ -225,3 +225,13 @@ func NewQueryProposalParams(proposalID uint64) QueryProposalParams {
 		ProposalID: proposalID,
 	}
 }
+
+type QueryValidatorParams struct {
+	ValidatorAddr types.ValAddress
+}
+
+func NewQueryValidatorParams(validatorAddr types.ValAddress) QueryValidatorParams {
+	return QueryValidatorParams{
+		ValidatorAddr: validatorAddr,
+	}
+}
