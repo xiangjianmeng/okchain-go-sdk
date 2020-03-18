@@ -184,3 +184,31 @@ func (cli *OKChainClient) MultiSend(fromInfo keys.Info, passWd string, transfers
 
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
+
+// create a new validator
+func (cli *OKChainClient) CreateValidator(fromInfo keys.Info, passWd, pubkeyStr, moniker, identity, website, details, minSelfDelegationStr, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	pubkey, err := types.GetConsPubKeyBech32(pubkeyStr)
+	if err != nil {
+		return types.TxResponse{}, err
+	}
+
+	description := types.NewDescription(moniker, identity, website, details)
+
+	minSelfDelegationCoin, err := utils.ParseCoin(minSelfDelegationStr)
+	if err != nil {
+		return types.TxResponse{}, err
+	}
+
+	msg := types.NewMsgCreateValidator(types.ValAddress(fromInfo.GetAddress()), pubkey, description, minSelfDelegationCoin)
+	
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+}

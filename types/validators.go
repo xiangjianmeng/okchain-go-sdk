@@ -44,3 +44,33 @@ func bech32ValidatorOutput(validator *types.Validator) (ValidatorOutput, error) 
 		VotingPower:      validator.VotingPower,
 	}, nil
 }
+
+type Description struct {
+	Moniker  string `json:"moniker"`  // name
+	Identity string `json:"identity"` // optional identity signature (ex. UPort or Keybase)
+	Website  string `json:"website"`  // optional website link
+	Details  string `json:"details"`  // optional details
+}
+
+func NewDescription(moniker, identity, website, details string) Description {
+	return Description{
+		Moniker:  moniker,
+		Identity: identity,
+		Website:  website,
+		Details:  details,
+	}
+}
+
+type CommissionRates struct {
+	Rate          Dec `json:"rate"`            // the commission rate charged to delegators, as a fraction
+	MaxRate       Dec `json:"max_rate"`        // maximum commission rate which validator can ever charge, as a fraction
+	MaxChangeRate Dec `json:"max_change_rate"` // maximum daily increase of the validator commission, as a fraction
+}
+
+func NewCommissionRates(rate, maxRate, maxChangeRate Dec) CommissionRates {
+	return CommissionRates{
+		Rate:          rate,
+		MaxRate:       maxRate,
+		MaxChangeRate: maxChangeRate,
+	}
+}

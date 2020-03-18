@@ -32,7 +32,8 @@ func TestSend(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.Send(fromInfo, passWd, addr1, "10.24okt", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.Send(fromInfo, passWd, addr1, "10.24okt", "my memo", accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -44,7 +45,8 @@ func TestNewOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.NewOrder(fromInfo, passWd, "xxb_okt", "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.NewOrder(fromInfo, passWd, "xxb_okt", "BUY", "11.2", "1.23",
+		"my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 	fmt.Println("orderId:", GetOrderIdFromResponse(&res))
@@ -57,7 +59,8 @@ func TestCancelOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID1-0000000244-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.CancelOrder(fromInfo, passWd, "ID1-0000000244-1", "my memo",
+		accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -69,7 +72,8 @@ func TestDelegate(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.Delegate(fromInfo, passWd, "1024.2048okt", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.Delegate(fromInfo, passWd, "1024.2048okt", "my memo", accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -81,7 +85,8 @@ func TestUnbond(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.Unbond(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.Unbond(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -95,7 +100,8 @@ func TestVote(t *testing.T) {
 
 	// delegate first
 	sequence := accInfo.GetSequence()
-	_, err = cli.Delegate(fromInfo, passWd, "1024.2048okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	_, err = cli.Delegate(fromInfo, passWd, "1024.2048okt", "my memo", accInfo.GetAccountNumber(),
+		sequence)
 	assertNotEqual(t, err, nil)
 
 	// vote then
@@ -113,7 +119,8 @@ func TestDestroyValidator(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.DestroyValidator(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.DestroyValidator(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
@@ -142,7 +149,23 @@ okchain1aac2la53t933t265nhat9pexf9sde8kjnagh9m 2.048okt`
 	transfers, err := utils.ParseTransfersStr(transStr)
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.MultiSend(fromInfo, passWd, transfers, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.MultiSend(fromInfo, passWd, transfers, "my memo", accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}
+
+func TestCreateValidator(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	pubkeyStr := "okchainvalconspub1zcjduepqghrtvkngejwese62wg49ewskz4r93vkyj3md5mg5rf7twcc6jduqpqw66q"
+	res, err := cli.CreateValidator(fromInfo, passWd, pubkeyStr, "my moniker", "my identity",
+		"my website", "my details", "1000okt", "my memo",
+		accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }

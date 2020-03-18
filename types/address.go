@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
+	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
 	"strings"
 
 	"errors"
@@ -338,4 +339,32 @@ func VerifyAddressFormat(bz []byte) error {
 		return errors.New("Incorrect address length")
 	}
 	return nil
+}
+
+// GetConsPubKeyBech32 creates a PubKey for a consensus node with a given public
+// key string using the Bech32 Bech32PrefixConsPub prefix.
+func GetConsPubKeyBech32(pubkey string) (pk crypto.PubKey, err error) {
+	bech32PrefixConsPub := GetConfig().GetBech32ConsensusPubPrefix()
+	bz, err := GetFromBech32(pubkey, bech32PrefixConsPub)
+	if err != nil {
+		return nil, err
+	}
+
+	pk, err = cryptoAmino.PubKeyFromBytes(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	return pk, nil
+}
+
+// MustBech32ifyConsPub returns the result of Bech32ifyConsPub panicing on
+// failure.
+func MustBech32ifyConsPub(pub crypto.PubKey) string {
+	enc, err := Bech32ifyConsPub(pub)
+	if err != nil {
+		panic(err)
+	}
+
+	return enc
 }

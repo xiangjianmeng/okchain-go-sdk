@@ -1,6 +1,9 @@
 package types
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/tendermint/tendermint/crypto"
+)
 
 // Transactions messages must fulfill the Msg
 type Msg interface {
@@ -268,7 +271,6 @@ func NewMsgDestroyValidator(delAddr AccAddress) MsgDestroyValidator {
 // GetSignBytes encodes the message for signing
 func (msg MsgDestroyValidator) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
-
 }
 
 func (MsgDestroyValidator) Route() string            { return "" }
@@ -289,10 +291,63 @@ func NewMsgUnjail(validatorAddr ValAddress) MsgUnjail {
 // GetSignBytes encodes the message for signing
 func (msg MsgUnjail) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
-
 }
 
 func (MsgUnjail) Route() string            { return "" }
 func (MsgUnjail) Type() string             { return "" }
 func (MsgUnjail) ValidateBasic() Error     { return nil }
 func (MsgUnjail) GetSigners() []AccAddress { return nil }
+
+type MsgCreateValidator struct {
+	Description       Description     `json:"description"`
+	Commission        CommissionRates `json:"commission"`
+	MinSelfDelegation Coin            `json:"min_self_delegation"`
+	DelegatorAddress  AccAddress      `json:"delegator_address"`
+	ValidatorAddress  ValAddress      `json:"validator_address"`
+	PubKey            crypto.PubKey   `json:"pubkey"`
+}
+
+type msgCreateValidatorJSON struct {
+	Description       Description     `json:"description"`
+	Commission        CommissionRates `json:"commission"`
+	MinSelfDelegation Coin            `json:"min_self_delegation"`
+	DelegatorAddress  AccAddress      `json:"delegator_address"`
+	ValidatorAddress  ValAddress      `json:"validator_address"`
+	PubKey            string          `json:"pubkey"`
+}
+
+func NewMsgCreateValidator(valAddr ValAddress, pubKey crypto.PubKey, description Description, minSelfDelegation Coin,
+) MsgCreateValidator {
+
+	return MsgCreateValidator{
+		Description:      description,
+		DelegatorAddress: AccAddress(valAddr),
+		ValidatorAddress: valAddr,
+		PubKey:           pubKey,
+		// fix the commission
+		Commission:        NewCommissionRates(ZeroDec(), ZeroDec(), ZeroDec()),
+		MinSelfDelegation: minSelfDelegation,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgCreateValidator) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+// useful for the signing of msg MsgCreateValidator
+func (msg MsgCreateValidator) MarshalJSON() ([]byte, error) {
+	return json.Marshal(msgCreateValidatorJSON{
+		Description:       msg.Description,
+		Commission:        msg.Commission,
+		DelegatorAddress:  msg.DelegatorAddress,
+		ValidatorAddress:  msg.ValidatorAddress,
+		PubKey:            MustBech32ifyConsPub(msg.PubKey),
+		MinSelfDelegation: msg.MinSelfDelegation,
+	})
+}
+
+func (MsgCreateValidator) Route() string            { return "" }
+func (MsgCreateValidator) Type() string             { return "" }
+func (MsgCreateValidator) ValidateBasic() Error     { return nil }
+func (MsgCreateValidator) GetSigners() []AccAddress { return nil }

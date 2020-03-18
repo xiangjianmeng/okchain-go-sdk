@@ -2,21 +2,18 @@ package types
 
 import (
 	"github.com/tendermint/go-amino"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
+	cryptoamino "github.com/tendermint/tendermint/crypto/encoding/amino"
 )
 
 var MsgCdc = amino.NewCodec()
 
 func init() {
 	RegisterMsgCdc(MsgCdc)
+	cryptoamino.RegisterAmino(MsgCdc)
+	MsgCdc.Seal()
 }
 
 func RegisterMsgCdc(cdc *amino.Codec) {
-	//cryptoAmino.RegisterAmino(cdc)
-	cdc.RegisterInterface((*crypto.PubKey)(nil), nil)
-	cdc.RegisterConcrete(secp256k1.PubKeySecp256k1{}, secp256k1.PubKeyAminoName, nil)
-
 	cdc.RegisterInterface((*Msg)(nil), nil)
 	cdc.RegisterConcrete(MsgSend{}, "okchain/token/MsgTransfer", nil)
 	cdc.RegisterConcrete(MsgNewOrder{}, "okchain/order/MsgNew", nil)
@@ -28,6 +25,7 @@ func RegisterMsgCdc(cdc *amino.Codec) {
 	cdc.RegisterConcrete(MsgVote{}, "okchain/staking/MsgVote", nil)
 	cdc.RegisterConcrete(MsgDestroyValidator{}, "okchain/staking/MsgDestroyValidator", nil)
 	cdc.RegisterConcrete(MsgUnjail{}, "cosmos-sdk/MsgUnjail", nil)
+	cdc.RegisterConcrete(MsgCreateValidator{}, "okchain/staking/MsgCreateValidator", nil)
 
 	cdc.RegisterInterface((*Tx)(nil), nil)
 	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)
