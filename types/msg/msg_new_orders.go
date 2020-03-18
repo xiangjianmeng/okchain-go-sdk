@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"encoding/json"
 	sdk "github.com/okex/okchain-go-sdk/types"
+
+	"github.com/okex/okchain-go-sdk/common"
 )
 
-const OrderItemLimit = 200
 
 //********************MsgNewOrders*************
 type MsgNewOrders struct {
@@ -55,8 +56,8 @@ func (msg MsgNewOrders) ValidateBasic() sdk.Error {
 	if msg.OrderItems == nil || len(msg.OrderItems) == 0 {
 		return sdk.ErrUnknownRequest("invalid OrderItems")
 	}
-	if len(msg.OrderItems) > OrderItemLimit {
-		return sdk.ErrUnknownRequest("Numbers of NewOrderItem should not be more than " + strconv.Itoa(OrderItemLimit))
+	if len(msg.OrderItems) > common.OrderItemLimit {
+		return sdk.ErrUnknownRequest("Numbers of NewOrderItem should not be more than " + strconv.Itoa(common.OrderItemLimit))
 	}
 	for _, item := range msg.OrderItems {
 		if len(item.Product) == 0 {

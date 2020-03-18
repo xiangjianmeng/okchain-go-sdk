@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"strconv"
 	sdk "github.com/okex/okchain-go-sdk/types"
+	"github.com/okex/okchain-go-sdk/common"
 )
 
-const MultiCancelOrderItemLimit = 200
 
 type MsgCancelOrders struct {
 	Sender       sdk.AccAddress `json:"sender"` // order maker address
@@ -36,8 +36,8 @@ func (msg MsgCancelOrders) ValidateBasic() sdk.Error {
 	if msg.OrderIds == nil || len(msg.OrderIds) == 0 {
 		return sdk.ErrUnknownRequest("invalid OrderIds")
 	}
-	if len(msg.OrderIds) > MultiCancelOrderItemLimit {
-		return sdk.ErrUnknownRequest("Numbers of CancelOrderItem should not be more than " + strconv.Itoa(OrderItemLimit))
+	if len(msg.OrderIds) > common.OrderItemLimit {
+		return sdk.ErrUnknownRequest("Numbers of CancelOrderItem should not be more than " + strconv.Itoa(common.OrderItemLimit))
 	}
 	for _, item := range msg.OrderIds {
 		if item == "" {
