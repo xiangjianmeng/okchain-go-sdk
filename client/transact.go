@@ -47,7 +47,7 @@ func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, product, side, pr
 	if !transactParams.IsValidNewOrderParams(fromInfo, passWd, product, side) {
 		return types.TxResponse{}, errors.New("err : params input to pend a order are invalid")
 	}
-	msg := msg.NewMsgNewOrder(fromInfo.GetAddress(), product, side, price, quantity)
+	msg := msg.NewPlaceOrder(fromInfo.GetAddress(), product, side, price, quantity)
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
@@ -63,7 +63,7 @@ func (cli *OKChainClient) CancelOrder(fromInfo keys.Info, passWd, orderID, memo 
 		return types.TxResponse{}, errors.New("err : params input to cancel a order are invalid")
 	}
 
-	msg := msg.NewMsgCancelOrder(fromInfo.GetAddress(), orderID)
+	msg := msg.NewCancelOrder(fromInfo.GetAddress(), orderID)
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
 		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())

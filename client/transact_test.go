@@ -33,7 +33,7 @@ func TestNewOrder(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
-	res, err := cli.NewOrder(fromInfo, passWd, "xxb_okt", "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.NewOrder(fromInfo, passWd, "xxb-127_okt", "BUY", "11.2", "1.23", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 	fmt.Println("orderId:", GetOrderIdFromResponse(&res))
@@ -45,7 +45,7 @@ func TestCancelOrder(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000004307-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000002425-1", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
