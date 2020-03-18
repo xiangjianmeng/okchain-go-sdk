@@ -72,15 +72,16 @@ func checkParamsGetTransactionsInfo(addr string, type_, start, end, page, perPag
 	return
 }
 
-func GetOrderIdFromResponse(result *types.TxResponse) string {
+func GetOrderIdListFromResponse(result *types.TxResponse) []string {
+	var orderIdList []string
 	for i := 0 ; i < len(result.Events) ; i++ {
 		event := result.Events[i]
 		for j := 0 ; j < len(event.Attributes) ; j++ {
 			attribute := event.Attributes[j]
 			if attribute.Key == "orderId" {
-				return attribute.Value
+				orderIdList= append(orderIdList, attribute.Value)
 			}
 		}
 	}
-	return ""
+	return orderIdList
 }

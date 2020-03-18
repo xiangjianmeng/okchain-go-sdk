@@ -9,6 +9,7 @@ import (
 const (
 	perPageDefault = 50
 	perPageMax     = 200
+	OrderItemLimit = 200
 )
 
 func IsValidAccaddr(addr string) bool {

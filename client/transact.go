@@ -44,10 +44,27 @@ func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, mem
 }
 
 func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, product, side, price, quantity, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
-	if !transactParams.IsValidNewOrderParams(fromInfo, passWd, product, side) {
-		return types.TxResponse{}, errors.New("err : params input to pend a order are invalid")
+	items := []msg.OrderItem{
+		msg.NewOrderItem(product, side, price, quantity),
 	}
-	msg := msg.NewMsgNewOrder(fromInfo.GetAddress(), product, side, price, quantity)
+	return cli.NewOrders(fromInfo, items, passWd, memo, accNum, seqNum)
+}
+
+func (cli *OKChainClient) CancelOrder(fromInfo keys.Info, passWd, orderId, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	orderIdList := []string {
+		orderId,
+	}
+	return cli.CancelOrders(fromInfo, passWd, memo, orderIdList, accNum, seqNum)
+}
+
+func (cli *OKChainClient) NewOrders(fromInfo keys.Info, orderItems []msg.OrderItem, passWd, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	for _, item := range orderItems {
+		if !transactParams.IsValidNewOrderParams(fromInfo, passWd, item.Product, item.Side) {
+			return types.TxResponse{}, errors.New("err : params input to pend a order are invalid")
+		}
+	}
+
+	msg := msg.NewMsgNewOrders(fromInfo.GetAddress(), orderItems)
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
@@ -58,12 +75,12 @@ func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, product, side, pr
 
 }
 
-func (cli *OKChainClient) CancelOrder(fromInfo keys.Info, passWd, orderID, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+func (cli *OKChainClient) CancelOrders(fromInfo keys.Info, passWd, memo string, orderIdList []string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if !transactParams.IsValidCancelOrderParams(fromInfo, passWd) {
 		return types.TxResponse{}, errors.New("err : params input to cancel a order are invalid")
 	}
 
-	msg := msg.NewMsgCancelOrder(fromInfo.GetAddress(), orderID)
+	msg := msg.NewMsgCancelOrders(fromInfo.GetAddress(), orderIdList)
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
 		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
