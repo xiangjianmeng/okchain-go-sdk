@@ -341,6 +341,124 @@ func VerifyAddressFormat(bz []byte) error {
 	return nil
 }
 
+// ----------------------------------------------------------------------------
+// consensus node
+// ----------------------------------------------------------------------------
+
+// ConsAddress defines a wrapper around bytes meant to present a consensus node.
+// When marshaled to a string or JSON, it uses Bech32.
+type ConsAddress []byte
+
+// Returns boolean for whether two ConsAddress are Equal
+func (ca ConsAddress) Equals(ca2 Address) bool {
+	if ca.Empty() && ca2.Empty() {
+		return true
+	}
+
+	return bytes.Equal(ca.Bytes(), ca2.Bytes())
+}
+
+// Returns boolean for whether an ConsAddress is empty
+func (ca ConsAddress) Empty() bool {
+	if ca == nil {
+		return true
+	}
+
+	ca2 := ConsAddress{}
+	return bytes.Equal(ca.Bytes(), ca2.Bytes())
+}
+
+// Marshal returns the raw address bytes. It is needed for protobuf
+// compatibility.
+func (ca ConsAddress) Marshal() ([]byte, error) {
+	return ca, nil
+}
+
+// Unmarshal sets the address to the given data. It is needed for protobuf
+// compatibility.
+func (ca *ConsAddress) Unmarshal(data []byte) error {
+	*ca = data
+	return nil
+}
+
+// MarshalJSON marshals to JSON using Bech32.
+func (ca ConsAddress) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ca.String())
+}
+
+// UnmarshalJSON unmarshals from JSON assuming Bech32 encoding.
+func (ca *ConsAddress) UnmarshalJSON(data []byte) error {
+	var s string
+
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+
+	ca2, err := ConsAddressFromBech32(s)
+	if err != nil {
+		return err
+	}
+
+	*ca = ca2
+	return nil
+}
+
+// Bytes returns the raw address bytes.
+func (ca ConsAddress) Bytes() []byte {
+	return ca
+}
+
+// String implements the Stringer interface.
+func (ca ConsAddress) String() string {
+	if ca.Empty() {
+		return ""
+	}
+
+	bech32PrefixConsAddr := GetConfig().GetBech32ConsensusAddrPrefix()
+
+	bech32Addr, err := bech32.ConvertAndEncode(bech32PrefixConsAddr, ca.Bytes())
+	if err != nil {
+		panic(err)
+	}
+
+	return bech32Addr
+}
+
+// Format implements the fmt.Formatter interface.
+// nolint: errcheck
+func (ca ConsAddress) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 's':
+		s.Write([]byte(ca.String()))
+	case 'p':
+		s.Write([]byte(fmt.Sprintf("%p", ca)))
+	default:
+		s.Write([]byte(fmt.Sprintf("%X", []byte(ca))))
+	}
+}
+
+// ConsAddressFromBech32 creates a ConsAddress from a Bech32 string.
+func ConsAddressFromBech32(address string) (addr ConsAddress, err error) {
+	if len(strings.TrimSpace(address)) == 0 {
+		return ConsAddress{}, nil
+	}
+
+	bech32PrefixConsAddr := GetConfig().GetBech32ConsensusAddrPrefix()
+
+	bz, err := GetFromBech32(address, bech32PrefixConsAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	err = VerifyAddressFormat(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	return ConsAddress(bz), nil
+}
+
 // GetConsPubKeyBech32 creates a PubKey for a consensus node with a given public
 // key string using the Bech32 Bech32PrefixConsPub prefix.
 func GetConsPubKeyBech32(pubkey string) (pk crypto.PubKey, err error) {
