@@ -19,9 +19,10 @@ func convertToDelegatorResp(delegator types.Delegator, stdUndelegation types.Sta
 		Tokens:               delegator.Tokens.StandardizeToDec(),
 		UnbondedTokens:       stdUndelegation.Quantity,
 		CompletionTime:       stdUndelegation.CompletionTime,
-		IsProxy:              delegator.IsProxy,
-		TotalDelegatedTokens: delegator.TotalDelegatedTokens.StandardizeToDec(),
-		ProxyAddress:         delegator.ProxyAddress,
+		// TODO: fit the env of staking pressure test, release the code later
+		//IsProxy:              delegator.IsProxy,
+		//TotalDelegatedTokens: delegator.TotalDelegatedTokens.StandardizeToDec(),
+		//ProxyAddress:         delegator.ProxyAddress,
 	}
 }
 
