@@ -5,6 +5,54 @@ import (
 	"time"
 )
 
+type DelegatorResp struct {
+	DelegatorAddress     AccAddress   `json:"delegator_address"`
+	ValidatorAddresses   []ValAddress `json:"validator_address"`
+	Shares               Dec          `json:"shares"`
+	Tokens               Dec          `json:"tokens" `
+	UnbondedTokens       Dec          `json:"unbonded_tokens"`
+	CompletionTime       time.Time    `json:"completion_time"`
+	IsProxy              bool         `json:"is_proxy"`
+	TotalDelegatedTokens Dec          `json:"total_delegated_tokens"`
+	ProxyAddress         AccAddress   `json:"proxy_address"`
+}
+
+type Delegator struct {
+	DelegatorAddress     AccAddress   `json:"delegator_address"`
+	ValidatorAddresses   []ValAddress `json:"validator_address"`
+	Shares               Dec          `json:"shares"`
+	Tokens               Int          `json:"tokens"`
+	IsProxy              bool         `json:"is_proxy"`
+	TotalDelegatedTokens Int          `json:"total_delegated_tokens"`
+	ProxyAddress         AccAddress   `json:"proxy_address"`
+}
+
+// NewDelegator creates a new instance of Delegator
+func NewDelegator(delAddr AccAddress) Delegator {
+	return Delegator{
+		delAddr,
+		nil,
+		ZeroDec(),
+		ZeroInt(),
+		false,
+		ZeroInt(),
+		nil,
+	}
+}
+
+type StandardizedUndelegation struct {
+	DelegatorAddress AccAddress `json:"delegator_address"`
+	Quantity         Dec        `json:"quantity"`
+	CompletionTime   time.Time  `json:"completion_time"`
+}
+
+// DefaultStandardizedUndelegation returns default entity for StandardizedUndelegation
+func DefaultStandardizedUndelegation() StandardizedUndelegation {
+	return StandardizedUndelegation{
+		nil, ZeroDec(), time.Unix(0, 0).UTC(),
+	}
+}
+
 type Description struct {
 	Moniker  string `json:"moniker"`  // name
 	Identity string `json:"identity"` // optional identity signature (ex. UPort or Keybase)

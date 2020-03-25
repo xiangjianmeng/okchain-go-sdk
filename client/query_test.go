@@ -174,6 +174,13 @@ func TestGetValidator(t *testing.T) {
 	fmt.Println(val)
 }
 
+func TestGetDelegator(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	delResp, err := cli.GetDelegator(addr)
+	assertNotEqual(t, err, nil)
+	fmt.Println(delResp)
+}
+
 func assertNotEqual(t *testing.T, a, b interface{}) {
 	if a != b {
 		t.Errorf("test failed: %s", a)

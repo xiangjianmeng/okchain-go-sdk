@@ -10,6 +10,21 @@ const (
 	countDefault = 100
 )
 
+func convertToDelegatorResp(delegator types.Delegator, stdUndelegation types.StandardizedUndelegation,
+) types.DelegatorResp {
+	return types.DelegatorResp{
+		DelegatorAddress:     delegator.DelegatorAddress,
+		ValidatorAddresses:   delegator.ValidatorAddresses,
+		Shares:               delegator.Shares,
+		Tokens:               delegator.Tokens.StandardizeToDec(),
+		UnbondedTokens:       stdUndelegation.Quantity,
+		CompletionTime:       stdUndelegation.CompletionTime,
+		IsProxy:              delegator.IsProxy,
+		TotalDelegatedTokens: delegator.TotalDelegatedTokens.StandardizeToDec(),
+		ProxyAddress:         delegator.ProxyAddress,
+	}
+}
+
 func checkParamsGetTickersInfo(count []int) (countRet int, err error) {
 	if len(count) > 1 {
 		return 0, errors.New("invalid params input for 'GetTickersInfo'")
@@ -73,9 +88,9 @@ func checkParamsGetTransactionsInfo(addr string, type_, start, end, page, perPag
 }
 
 func GetOrderIdFromResponse(result *types.TxResponse) string {
-	for i := 0 ; i < len(result.Events) ; i++ {
+	for i := 0; i < len(result.Events); i++ {
 		event := result.Events[i]
-		for j := 0 ; j < len(event.Attributes) ; j++ {
+		for j := 0; j < len(event.Attributes); j++ {
 			attribute := event.Attributes[j]
 			if attribute.Key == "orderId" {
 				return attribute.Value

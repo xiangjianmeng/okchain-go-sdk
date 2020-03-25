@@ -25,11 +25,7 @@ const (
 	dealsInfoPath         = "custom/backend/deals"
 	transactionsInfoPath  = "custom/backend/txs"
 	validatorPath         = "custom/staking/validator"
-)
-
-// useful for subspace query
-var (
-	validatorsKey = []byte{0x21}
+	unbondDelegationPath  = "custom/staking/unbondingDelegation"
 )
 
 func (cli *OKChainClient) GetAccountInfoByAddr(addr string) (types.Account, error) {
@@ -336,7 +332,7 @@ func (cli *OKChainClient) GetTransactionsInfo(addr string, type_, start, end, pa
 }
 
 func (cli *OKChainClient) GetValidators() ([]types.StandardizedValidator, error) {
-	resKVs, err := cli.querySubspace(validatorsKey, "staking")
+	resKVs, err := cli.querySubspace(types.ValidatorsKey, "staking")
 	if err != nil {
 		return nil, err
 	}
@@ -375,4 +371,38 @@ func (cli *OKChainClient) GetValidator(valAddrStr string) (types.StandardizedVal
 	}
 
 	return val.Standardize(), nil
+}
+
+func (cli *OKChainClient) GetDelegator(delAddrStr string) (types.DelegatorResp, error) {
+	var delResp types.DelegatorResp
+	delAddr, err := types.AccAddressFromBech32(delAddrStr)
+	if err != nil {
+		return delResp, err
+	}
+
+	resp, err := cli.queryStore(types.GetDelegatorKey(delAddr), "staking", "key")
+	if err != nil {
+		return delResp, fmt.Errorf("ok client query error : %s", err.Error())
+	}
+
+	delegator, stdUndelegation := types.NewDelegator(delAddr), types.DefaultStandardizedUndelegation()
+	if len(resp) != 0 {
+		cdc.MustUnmarshalBinaryLengthPrefixed(resp, &delegator)
+	}
+
+	// query for the undelegation info
+	jsonBytes, err := cdc.MarshalJSON(query_params.NewQueryDelegatorParams(delAddr))
+	if err != nil {
+		return delResp, fmt.Errorf("error : QueryDelegatorParams failed in json marshal : %s", err.Error())
+	}
+
+	res, err := cli.query(unbondDelegationPath, jsonBytes)
+	// if err!= nil , we treat it as there's no undelegation of the delegator
+	if err == nil {
+		if err := cdc.UnmarshalJSON(res, &stdUndelegation); err != nil {
+			return delResp, err
+		}
+	}
+
+	return convertToDelegatorResp(delegator, stdUndelegation), nil
 }

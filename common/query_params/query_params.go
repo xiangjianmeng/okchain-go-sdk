@@ -235,3 +235,14 @@ func NewQueryValidatorParams(validatorAddr types.ValAddress) QueryValidatorParam
 		ValidatorAddr: validatorAddr,
 	}
 }
+
+type QueryDelegatorParams struct {
+	DelegatorAddr types.AccAddress
+}
+
+// NewQueryDelegatorParams creates a new instance of QueryDelegatorParams
+func NewQueryDelegatorParams(delegatorAddr types.AccAddress) QueryDelegatorParams {
+	return QueryDelegatorParams{
+		DelegatorAddr: delegatorAddr,
+	}
+}
