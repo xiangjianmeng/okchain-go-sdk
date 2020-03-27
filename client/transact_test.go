@@ -191,11 +191,23 @@ func TestOKChainClient_RegisterProxy(t *testing.T) {
 	assertNotEqual(t, err, nil)
 
 	sequence := accInfo.GetSequence()
-	res, err := cli.Delegate(fromInfo, passWd, "1024okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	res, err := cli.Delegate(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 
 	sequence++
 	res, err = cli.RegisterProxy(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), sequence)
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}
+
+func TestOKChainClient_UnregisterProxy(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	res, err := cli.UnregisterProxy(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
