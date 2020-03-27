@@ -25,7 +25,7 @@ const (
 	valName     = "validator"
 )
 
-func TestSend(t *testing.T) {
+func TestOKChainClient_Send(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -38,7 +38,7 @@ func TestSend(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestNewOrder(t *testing.T) {
+func TestOKChainClient_NewOrder(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -52,7 +52,7 @@ func TestNewOrder(t *testing.T) {
 	fmt.Println("orderId:", GetOrderIdFromResponse(&res))
 }
 
-func TestCancelOrder(t *testing.T) {
+func TestOKChainClient_CancelOrder(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -65,7 +65,7 @@ func TestCancelOrder(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestDelegate(t *testing.T) {
+func TestOKChainClient_Delegate(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -78,7 +78,7 @@ func TestDelegate(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestUnbond(t *testing.T) {
+func TestOKChainClient_Unbond(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -91,7 +91,7 @@ func TestUnbond(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestVote(t *testing.T) {
+func TestOKChainClient_Vote(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -112,7 +112,7 @@ func TestVote(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestDestroyValidator(t *testing.T) {
+func TestOKChainClient_DestroyValidator(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(valMnemonic, valName, passWd)
 	assertNotEqual(t, err, nil)
@@ -125,7 +125,7 @@ func TestDestroyValidator(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestUnjail(t *testing.T) {
+func TestOKChainClient_Unjail(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(valMnemonic, valName, passWd)
 	assertNotEqual(t, err, nil)
@@ -137,7 +137,7 @@ func TestUnjail(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestMultiSend(t *testing.T) {
+func TestOKChainClient_MultiSend(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -155,7 +155,7 @@ okchain1aac2la53t933t265nhat9pexf9sde8kjnagh9m 2.048okt`
 	fmt.Println(res)
 }
 
-func TestCreateValidator(t *testing.T) {
+func TestOKChainClient_CreateValidator(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
 	assertNotEqual(t, err, nil)
@@ -170,7 +170,7 @@ func TestCreateValidator(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestEditValidator(t *testing.T) {
+func TestOKChainClient_EditValidator(t *testing.T) {
 	cli := NewClient(rpcUrl)
 	fromInfo, _, err := utils.CreateAccountWithMnemo(valMnemonic, valName, passWd)
 	assertNotEqual(t, err, nil)
@@ -179,6 +179,23 @@ func TestEditValidator(t *testing.T) {
 
 	res, err := cli.EditValidator(fromInfo, passWd, "my moniker", "my identity", "my website",
 		"my details", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}
+
+func TestOKChainClient_RegisterProxy(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	sequence := accInfo.GetSequence()
+	res, err := cli.Delegate(fromInfo, passWd, "1024okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	assertNotEqual(t, err, nil)
+
+	sequence++
+	res, err = cli.RegisterProxy(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }

@@ -377,3 +377,27 @@ func (MsgEditValidator) Route() string            { return "" }
 func (MsgEditValidator) Type() string             { return "" }
 func (MsgEditValidator) ValidateBasic() Error     { return nil }
 func (MsgEditValidator) GetSigners() []AccAddress { return nil }
+
+type MsgRegProxy struct {
+	ProxyAddress AccAddress `json:"proxy_address"`
+	Reg          bool       `json:"reg"`
+}
+
+// NewMsgRegProxy creates a msg of registering proxy
+func NewMsgRegProxy(proxyAddress AccAddress, reg bool) MsgRegProxy {
+	return MsgRegProxy{
+		ProxyAddress: proxyAddress,
+		Reg:          reg,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgRegProxy) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+// nolint
+func (MsgRegProxy) Route() string            { return "" }
+func (MsgRegProxy) Type() string             { return "" }
+func (MsgRegProxy) ValidateBasic() Error     { return nil }
+func (MsgRegProxy) GetSigners() []AccAddress { return nil }

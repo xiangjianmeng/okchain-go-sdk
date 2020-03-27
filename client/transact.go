@@ -231,3 +231,20 @@ func (cli *OKChainClient) EditValidator(fromInfo keys.Info, passWd, moniker, ide
 	return cli.broadcast(stdBytes, BroadcastBlock)
 
 }
+
+// RegisterProxy registers the identity of proxy
+func (cli *OKChainClient) RegisterProxy(fromInfo keys.Info, passWd, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	msg := types.NewMsgRegProxy(fromInfo.GetAddress(), true)
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+
+}
