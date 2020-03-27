@@ -351,3 +351,29 @@ func (MsgCreateValidator) Route() string            { return "" }
 func (MsgCreateValidator) Type() string             { return "" }
 func (MsgCreateValidator) ValidateBasic() Error     { return nil }
 func (MsgCreateValidator) GetSigners() []AccAddress { return nil }
+
+type MsgEditValidator struct {
+	Description
+	ValidatorAddress  ValAddress `json:"address"`
+	MinSelfDelegation *Int       `json:"min_self_delegation"`
+}
+
+// NewMsgEditValidator creates a msg of edit-validator
+func NewMsgEditValidator(valAddr ValAddress, description Description) MsgEditValidator {
+	return MsgEditValidator{
+		Description:       description,
+		ValidatorAddress:  valAddr,
+		MinSelfDelegation: nil,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgEditValidator) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+// nolint
+func (MsgEditValidator) Route() string            { return "" }
+func (MsgEditValidator) Type() string             { return "" }
+func (MsgEditValidator) ValidateBasic() Error     { return nil }
+func (MsgEditValidator) GetSigners() []AccAddress { return nil }

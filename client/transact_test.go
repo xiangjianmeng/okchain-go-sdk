@@ -169,3 +169,16 @@ func TestCreateValidator(t *testing.T) {
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
 }
+
+func TestEditValidator(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(valMnemonic, valName, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	res, err := cli.EditValidator(fromInfo, passWd, "my moniker", "my identity", "my website",
+		"my details", "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+}

@@ -204,11 +204,30 @@ func (cli *OKChainClient) CreateValidator(fromInfo keys.Info, passWd, pubkeyStr,
 	}
 
 	msg := types.NewMsgCreateValidator(types.ValAddress(fromInfo.GetAddress()), pubkey, description, minSelfDelegationCoin)
-	
+
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
 		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
 	}
 
 	return cli.broadcast(stdBytes, BroadcastBlock)
+}
+
+// EditValidator edits the description on a validator by the owner
+func (cli *OKChainClient) EditValidator(fromInfo keys.Info, passWd, moniker, identity, website, details, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	description := types.NewDescription(moniker, identity, website, details)
+
+	msg := types.NewMsgEditValidator(types.ValAddress(fromInfo.GetAddress()), description)
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+
 }
