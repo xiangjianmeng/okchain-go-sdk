@@ -383,7 +383,7 @@ type MsgRegProxy struct {
 	Reg          bool       `json:"reg"`
 }
 
-// NewMsgRegProxy creates a msg of registering proxy
+// NewMsgRegProxy creates a msg of registering or unregistering proxy
 func NewMsgRegProxy(proxyAddress AccAddress, reg bool) MsgRegProxy {
 	return MsgRegProxy{
 		ProxyAddress: proxyAddress,
@@ -401,3 +401,27 @@ func (MsgRegProxy) Route() string            { return "" }
 func (MsgRegProxy) Type() string             { return "" }
 func (MsgRegProxy) ValidateBasic() Error     { return nil }
 func (MsgRegProxy) GetSigners() []AccAddress { return nil }
+
+type MsgBindProxy struct {
+	DelAddr      AccAddress `json:"delegator_address"`
+	ProxyAddress AccAddress `json:"proxy_address"`
+}
+
+// NewMsgBindProxy creates a msg of binding proxy
+func NewMsgBindProxy(delAddr, proxyAddr AccAddress) MsgBindProxy {
+	return MsgBindProxy{
+		DelAddr:      delAddr,
+		ProxyAddress: proxyAddr,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgBindProxy) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+// nolint
+func (MsgBindProxy) Route() string            { return "" }
+func (MsgBindProxy) Type() string             { return "" }
+func (MsgBindProxy) ValidateBasic() Error     { return nil }
+func (MsgBindProxy) GetSigners() []AccAddress { return nil }

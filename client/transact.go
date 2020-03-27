@@ -265,3 +265,26 @@ func (cli *OKChainClient) UnregisterProxy(fromInfo keys.Info, passWd, memo strin
 	return cli.broadcast(stdBytes, BroadcastBlock)
 
 }
+
+// BindProxy binds the staking token to a proxy
+func (cli *OKChainClient) BindProxy(fromInfo keys.Info, passWd, proxyAddrStr, memo string, accNum, seqNum uint64) (
+	types.TxResponse, error) {
+	if err := transact_params.CheckSendParams(fromInfo, passWd, proxyAddrStr); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	proxyAddr, err := types.AccAddressFromBech32(proxyAddrStr)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : parse Address [%s] error: %s", proxyAddrStr, err)
+	}
+
+	msg := types.NewMsgBindProxy(fromInfo.GetAddress(), proxyAddr)
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+
+}
