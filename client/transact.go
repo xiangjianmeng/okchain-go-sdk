@@ -266,7 +266,7 @@ func (cli *OKChainClient) UnregisterProxy(fromInfo keys.Info, passWd, memo strin
 
 }
 
-// BindProxy binds the staking token to a proxy
+// BindProxy binds the staking tokens to a proxy
 func (cli *OKChainClient) BindProxy(fromInfo keys.Info, passWd, proxyAddrStr, memo string, accNum, seqNum uint64) (
 	types.TxResponse, error) {
 	if err := transact_params.CheckSendParams(fromInfo, passWd, proxyAddrStr); err != nil {
@@ -279,6 +279,24 @@ func (cli *OKChainClient) BindProxy(fromInfo keys.Info, passWd, proxyAddrStr, me
 	}
 
 	msg := types.NewMsgBindProxy(fromInfo.GetAddress(), proxyAddr)
+
+	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
+	if err != nil {
+		return types.TxResponse{}, fmt.Errorf("err : build and sign stdTx error: %s", err.Error())
+	}
+
+	return cli.broadcast(stdBytes, BroadcastBlock)
+
+}
+
+// UnbindProxy unbinds the staking tokens from a proxy
+func (cli *OKChainClient) UnbindProxy(fromInfo keys.Info, passWd, memo string, accNum, seqNum uint64) (
+	types.TxResponse, error) {
+	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+		return types.TxResponse{}, err
+	}
+
+	msg := types.NewMsgUnbindProxy(fromInfo.GetAddress())
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {

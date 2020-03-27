@@ -246,3 +246,16 @@ func TestOKChainClient_BindProxy(t *testing.T) {
 	fmt.Println(res)
 
 }
+
+func TestOKChainClient_UnbindProxy(t *testing.T) {
+	cli := NewClient(rpcUrl)
+	fromInfo, _, err := utils.CreateAccountWithMnemo(mnemonic, name, passWd)
+	assertNotEqual(t, err, nil)
+	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
+	assertNotEqual(t, err, nil)
+
+	res, err := cli.UnbindProxy(fromInfo, passWd, "my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	assertNotEqual(t, err, nil)
+	fmt.Println(res)
+
+}

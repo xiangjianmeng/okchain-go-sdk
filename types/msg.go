@@ -425,3 +425,25 @@ func (MsgBindProxy) Route() string            { return "" }
 func (MsgBindProxy) Type() string             { return "" }
 func (MsgBindProxy) ValidateBasic() Error     { return nil }
 func (MsgBindProxy) GetSigners() []AccAddress { return nil }
+
+type MsgUnbindProxy struct {
+	DelAddr AccAddress `json:"delegator_address"`
+}
+
+// NewMsgDestroyValidator creates a msg of unbinding proxy
+func NewMsgUnbindProxy(delAddr AccAddress) MsgUnbindProxy {
+	return MsgUnbindProxy{
+		DelAddr: delAddr,
+	}
+}
+
+// GetSignBytes encodes the message for signing
+func (msg MsgUnbindProxy) GetSignBytes() []byte {
+	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
+}
+
+// nolint
+func (MsgUnbindProxy) Route() string            { return "" }
+func (MsgUnbindProxy) Type() string             { return "" }
+func (MsgUnbindProxy) ValidateBasic() Error     { return nil }
+func (MsgUnbindProxy) GetSigners() []AccAddress { return nil }
