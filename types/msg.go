@@ -57,6 +57,7 @@ type MsgSend struct {
 	Amount      DecCoins   `json:"amount"`
 }
 
+// NewMsgTokenSend is a constructor function for MsgSend
 func NewMsgTokenSend(from, to AccAddress, coins DecCoins) MsgSend {
 	return MsgSend{
 		FromAddress: from,
@@ -74,6 +75,7 @@ func (msg MsgSend) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
+// nolint
 func (MsgSend) Route() string            { return "" }
 func (MsgSend) Type() string             { return "" }
 func (MsgSend) ValidateBasic() Error     { return nil }
@@ -101,6 +103,7 @@ func (msg MsgNewOrders) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
+// nolint
 func (MsgNewOrders) Route() string            { return "" }
 func (MsgNewOrders) Type() string             { return "" }
 func (MsgNewOrders) ValidateBasic() Error     { return nil }
@@ -128,6 +131,7 @@ func (msg MsgCancelOrders) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
+// nolint
 func (MsgCancelOrders) Route() string            { return "" }
 func (MsgCancelOrders) Type() string             { return "" }
 func (MsgCancelOrders) ValidateBasic() Error     { return nil }
@@ -138,6 +142,7 @@ type MsgMultiSend struct {
 	Transfers []TransferUnit `json:"transfers"`
 }
 
+// NewMsgMultiSend is a constructor function for MsgMultiSend
 func NewMsgMultiSend(from AccAddress, transfers []TransferUnit) MsgMultiSend {
 	return MsgMultiSend{
 		From:      from,
@@ -154,6 +159,7 @@ func (msg MsgMultiSend) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
+// nolint
 func (MsgMultiSend) Route() string            { return "" }
 func (MsgMultiSend) Type() string             { return "" }
 func (MsgMultiSend) ValidateBasic() Error     { return nil }
@@ -165,6 +171,7 @@ type MsgMint struct {
 	Owner  AccAddress `json:"owner"`
 }
 
+// NewMsgMint is a constructor function for MsgMint
 func NewMsgMint(symbol string, amount int64, owner AccAddress) MsgMint {
 	return MsgMint{
 		Symbol: symbol,
@@ -182,6 +189,7 @@ func (msg MsgMint) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
+// nolint
 func (MsgMint) Route() string            { return "" }
 func (MsgMint) Type() string             { return "" }
 func (MsgMint) ValidateBasic() Error     { return nil }
@@ -189,10 +197,11 @@ func (MsgMint) GetSigners() []AccAddress { return nil }
 
 type MsgDelegate struct {
 	DelegatorAddress AccAddress `json:"delegator_address"`
-	Amount           Coin       `json:"quantity"`
+	Amount           DecCoin    `json:"quantity"`
 }
 
-func NewMsgDelegate(delAddr AccAddress, amount Coin) MsgDelegate {
+// NewMsgDelegate creates a msg of delegating
+func NewMsgDelegate(delAddr AccAddress, amount DecCoin) MsgDelegate {
 	return MsgDelegate{
 		DelegatorAddress: delAddr,
 		Amount:           amount,
@@ -204,6 +213,7 @@ func (msg MsgDelegate) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
+// nolint
 func (MsgDelegate) Route() string            { return "" }
 func (MsgDelegate) Type() string             { return "" }
 func (MsgDelegate) ValidateBasic() Error     { return nil }
@@ -211,10 +221,11 @@ func (MsgDelegate) GetSigners() []AccAddress { return nil }
 
 type MsgUndelegate struct {
 	DelegatorAddress AccAddress `json:"delegator_address" `
-	Amount           Coin       `json:"quantity"`
+	Amount           DecCoin    `json:"quantity"`
 }
 
-func NewMsgUndelegate(delAddr AccAddress, amount Coin) MsgUndelegate {
+// NewMsgUndelegate creates a msg of undelegating
+func NewMsgUndelegate(delAddr AccAddress, amount DecCoin) MsgUndelegate {
 	return MsgUndelegate{
 		DelegatorAddress: delAddr,
 		Amount:           amount,
@@ -226,6 +237,7 @@ func (msg MsgUndelegate) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
+// nolint
 func (MsgUndelegate) Route() string            { return "" }
 func (MsgUndelegate) Type() string             { return "" }
 func (MsgUndelegate) ValidateBasic() Error     { return nil }
@@ -248,6 +260,7 @@ func (msg MsgVote) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
+// nolint
 func (MsgVote) Route() string            { return "" }
 func (MsgVote) Type() string             { return "" }
 func (MsgVote) ValidateBasic() Error     { return nil }
@@ -268,6 +281,7 @@ func (msg MsgDestroyValidator) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
+// nolint
 func (MsgDestroyValidator) Route() string            { return "" }
 func (MsgDestroyValidator) Type() string             { return "" }
 func (MsgDestroyValidator) ValidateBasic() Error     { return nil }
@@ -288,6 +302,7 @@ func (msg MsgUnjail) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
+// nolint
 func (MsgUnjail) Route() string            { return "" }
 func (MsgUnjail) Type() string             { return "" }
 func (MsgUnjail) ValidateBasic() Error     { return nil }
@@ -342,6 +357,7 @@ func (msg MsgCreateValidator) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// nolint
 func (MsgCreateValidator) Route() string            { return "" }
 func (MsgCreateValidator) Type() string             { return "" }
 func (MsgCreateValidator) ValidateBasic() Error     { return nil }

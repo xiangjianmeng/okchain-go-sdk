@@ -17,6 +17,7 @@ const (
 	BroadcastAsync = "async"
 )
 
+// Send transfers coins to others
 func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckSendParams(fromInfo, passWd, toAddr); err != nil {
 		return types.TxResponse{}, err
@@ -42,6 +43,7 @@ func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, mem
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
+// NewOrders places orders with some detail info
 func (cli *OKChainClient) NewOrders(fromInfo keys.Info, passWd, products, sides, prices, quantities, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	productStrs := strings.Split(products, ",")
 	sideStrs := strings.Split(sides, ",")
@@ -64,6 +66,7 @@ func (cli *OKChainClient) NewOrders(fromInfo keys.Info, passWd, products, sides,
 
 }
 
+// CancelOrders cancels orders by orderIds
 func (cli *OKChainClient) CancelOrders(fromInfo keys.Info, passWd, orderIds, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	orderIdStrs := strings.Split(orderIds, ",")
 	if err := transact_params.CheckCancelOrderParams(fromInfo, passWd, orderIdStrs); err != nil {
@@ -82,13 +85,13 @@ func (cli *OKChainClient) CancelOrders(fromInfo keys.Info, passWd, orderIds, mem
 
 // design for the pressure test of dev
 
-// Delegate okt for voting
+// Delegate delegates okt for voting
 func (cli *OKChainClient) Delegate(fromInfo keys.Info, passWd, coinsStr, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
 	}
 
-	coin, err := utils.ParseCoin(coinsStr)
+	coin, err := utils.ParseDecCoin(coinsStr)
 	if err != nil {
 		return types.TxResponse{}, fmt.Errorf("err : parse Coins [%s] error: %s", coinsStr, err)
 	}
@@ -103,13 +106,13 @@ func (cli *OKChainClient) Delegate(fromInfo keys.Info, passWd, coinsStr, memo st
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// unbond the delegation on okchain
+// Unbond unbonds the delegation on okchain
 func (cli *OKChainClient) Unbond(fromInfo keys.Info, passWd, coinsStr, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
 	}
 
-	coin, err := utils.ParseCoin(coinsStr)
+	coin, err := utils.ParseDecCoin(coinsStr)
 	if err != nil {
 		return types.TxResponse{}, fmt.Errorf("err : parse Coins [%s] error: %s", coinsStr, err)
 	}
