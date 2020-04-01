@@ -85,3 +85,18 @@ func (coins DecCoins) IsValid() bool {
 		return true
 	}
 }
+
+// IsAllPositive returns true if there is at least one coin and all currencies
+func (coins DecCoins) IsAllPositive() bool {
+	if len(coins) == 0 {
+		return false
+	}
+
+	for _, coin := range coins {
+		if !coin.IsPositive() {
+			return false
+		}
+	}
+
+	return true
+}

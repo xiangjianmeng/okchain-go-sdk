@@ -140,7 +140,7 @@ func ParseTransfersStr(str string) ([]types.TransferUnit, error) {
 			return nil, err
 		}
 
-		coins, err := ParseCoins(coinStr)
+		coins, err := ParseDecCoins(coinStr)
 		if err != nil {
 			return nil, err
 		}

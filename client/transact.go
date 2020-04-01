@@ -148,7 +148,7 @@ func (cli *OKChainClient) Vote(fromInfo keys.Info, passWd string, valAddrsStr []
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// destroy the validator and unbond the min-self-delegation
+// DestroyValidator deregisters the validator and unbond the min-self-delegation
 func (cli *OKChainClient) DestroyValidator(fromInfo keys.Info, passWd string, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
@@ -164,7 +164,7 @@ func (cli *OKChainClient) DestroyValidator(fromInfo keys.Info, passWd string, me
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// unjail the own validator which was jailed by slashing module
+// Unjail unjails the own validator which was jailed by slashing module
 func (cli *OKChainClient) Unjail(fromInfo keys.Info, passWd string, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
@@ -180,7 +180,7 @@ func (cli *OKChainClient) Unjail(fromInfo keys.Info, passWd string, memo string,
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// multi-send coins to several receivers
+// MultiSend multi-sends coins to several receivers
 func (cli *OKChainClient) MultiSend(fromInfo keys.Info, passWd string, transfers []types.TransferUnit, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckTransferUnitsParams(fromInfo, passWd, transfers); err != nil {
 		return types.TxResponse{}, err

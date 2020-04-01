@@ -271,6 +271,7 @@ type MsgDestroyValidator struct {
 	DelAddr AccAddress `json:"delegator_address"`
 }
 
+// NewMsgDestroyValidator creates a msg of destroy-validator
 func NewMsgDestroyValidator(delAddr AccAddress) MsgDestroyValidator {
 	return MsgDestroyValidator{
 		DelAddr: delAddr,
@@ -292,6 +293,7 @@ type MsgUnjail struct {
 	ValidatorAddr ValAddress `json:"address"`
 }
 
+// NewMsgUnjail creates a msg of unjailing
 func NewMsgUnjail(validatorAddr ValAddress) MsgUnjail {
 	return MsgUnjail{
 		ValidatorAddr: validatorAddr,

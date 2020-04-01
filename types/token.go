@@ -38,10 +38,10 @@ type TokenPair struct {
 
 type TransferUnit struct {
 	To    AccAddress `json:"to"`
-	Coins Coins      `json:"coins"`
+	Coins DecCoins   `json:"coins"`
 }
 
-func NewTransferUnit(addr AccAddress, coins Coins) TransferUnit {
+func NewTransferUnit(addr AccAddress, coins DecCoins) TransferUnit {
 	return TransferUnit{
 		addr,
 		coins,
