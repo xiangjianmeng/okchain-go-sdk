@@ -45,11 +45,19 @@ func TestOKChainClient_NewOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.NewOrder(fromInfo, passWd, "xxb_okt", "BUY", "11.2", "1.23",
-		"my memo", accInfo.GetAccountNumber(), accInfo.GetSequence())
+	res, err := cli.NewOrder(
+		fromInfo,
+		passWd,
+		"xxb-031_okt,xxb-031_okt,xxb-031_okt",
+		"BUY,SELL,BUY",
+		"11.2,22.3,33.4",
+		"1.23,2.34,3.45",
+		"my memo",
+		accInfo.GetAccountNumber(),
+		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
-	fmt.Println("orderId:", GetOrderIdFromResponse(&res))
+	fmt.Println("orderId:", getOrderIdsFromResponse(&res))
 }
 
 func TestOKChainClient_CancelOrder(t *testing.T) {
@@ -59,7 +67,7 @@ func TestOKChainClient_CancelOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID1-0000000244-1", "my memo",
+	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000001838-1", "my memo",
 		accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
@@ -162,9 +170,10 @@ func TestOKChainClient_CreateValidator(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	pubkeyStr := "okchainvalconspub1zcjduepqghrtvkngejwese62wg49ewskz4r93vkyj3md5mg5rf7twcc6jduqpqw66q"
+	//pubkeyStr := "okchainvalconspub1zcjduepqghrtvkngejwese62wg49ewskz4r93vkyj3md5mg5rf7twcc6jduqpqw66q"
+	pubkeyStr := "okchainvalconspub1zcjduepqaq86fqghsvk2xszx0vqh7ctyl3gjcxxw5tgnggqjetw2lpe8vfhsdf3mg2"
 	res, err := cli.CreateValidator(fromInfo, passWd, pubkeyStr, "my moniker", "my identity",
-		"my website", "my details", "1000okt", "my memo",
+		"my website", "my details", "1okt", "my memo",
 		accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)

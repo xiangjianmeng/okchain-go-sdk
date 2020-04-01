@@ -1,7 +1,9 @@
 package client
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/okex/okchain-go-sdk/common"
 	"github.com/okex/okchain-go-sdk/types"
 )
@@ -13,12 +15,12 @@ const (
 func convertToDelegatorResp(delegator types.Delegator, stdUndelegation types.StandardizedUndelegation,
 ) types.DelegatorResp {
 	return types.DelegatorResp{
-		DelegatorAddress:     delegator.DelegatorAddress,
-		ValidatorAddresses:   delegator.ValidatorAddresses,
-		Shares:               delegator.Shares,
-		Tokens:               delegator.Tokens.StandardizeToDec(),
-		UnbondedTokens:       stdUndelegation.Quantity,
-		CompletionTime:       stdUndelegation.CompletionTime,
+		DelegatorAddress:   delegator.DelegatorAddress,
+		ValidatorAddresses: delegator.ValidatorAddresses,
+		Shares:             delegator.Shares,
+		Tokens:             delegator.Tokens.StandardizeToDec(),
+		UnbondedTokens:     stdUndelegation.Quantity,
+		CompletionTime:     stdUndelegation.CompletionTime,
 		// TODO: fit the env of staking pressure test, release the code later
 		//IsProxy:              delegator.IsProxy,
 		//TotalDelegatedTokens: delegator.TotalDelegatedTokens.StandardizeToDec(),
@@ -88,15 +90,25 @@ func checkParamsGetTransactionsInfo(addr string, type_, start, end, page, perPag
 	return
 }
 
-func GetOrderIdFromResponse(result *types.TxResponse) string {
-	for i := 0; i < len(result.Events); i++ {
-		event := result.Events[i]
-		for j := 0; j < len(event.Attributes); j++ {
-			attribute := event.Attributes[j]
-			if attribute.Key == "orderId" {
-				return attribute.Value
+func getOrderIdsFromResponse(txResp *types.TxResponse) (orderIds []string) {
+	for _, event := range txResp.Events {
+		if event.Type == "message" {
+			for _, attribute := range event.Attributes {
+				if attribute.Key == "orders" {
+					var orderRes []types.OrderResult
+					if err := json.Unmarshal([]byte(attribute.Value), &orderRes); err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					for _, res := range orderRes {
+						orderIds = append(orderIds, res.OrderID)
+
+					}
+				}
 			}
 		}
 	}
-	return ""
+
+	return
 }

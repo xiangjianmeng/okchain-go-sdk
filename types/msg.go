@@ -54,10 +54,10 @@ type TxEncoder func(tx Tx) ([]byte, error)
 type MsgSend struct {
 	FromAddress AccAddress `json:"from_address"`
 	ToAddress   AccAddress `json:"to_address"`
-	Amount      Coins      `json:"amount"`
+	Amount      DecCoins   `json:"amount"`
 }
 
-func NewMsgTokenSend(from, to AccAddress, coins Coins) MsgSend {
+func NewMsgTokenSend(from, to AccAddress, coins DecCoins) MsgSend {
 	return MsgSend{
 		FromAddress: from,
 		ToAddress:   to,
@@ -79,26 +79,21 @@ func (MsgSend) Type() string             { return "" }
 func (MsgSend) ValidateBasic() Error     { return nil }
 func (MsgSend) GetSigners() []AccAddress { return nil }
 
-type MsgNewOrder struct {
-	Sender   AccAddress `json:"sender"`
-	Product  string     `json:"product"`
-	Side     string     `json:"side"`
-	Price    Dec        `json:"price"`
-	Quantity Dec        `json:"quantity"`
+type MsgNewOrders struct {
+	Sender     AccAddress  `json:"sender"`
+	OrderItems []OrderItem `json:"order_items"`
 }
 
-func NewMsgNewOrder(sender AccAddress, product string, side string, price string, quantity string) MsgNewOrder {
-	return MsgNewOrder{
-		Sender:   sender,
-		Product:  product,
-		Side:     side,
-		Price:    MustNewDecFromStr(price),
-		Quantity: MustNewDecFromStr(quantity),
+// NewMsgNewOrders is a constructor function for MsgNewOrder
+func NewMsgNewOrders(sender AccAddress, orderItems []OrderItem) MsgNewOrders {
+	return MsgNewOrders{
+		Sender:     sender,
+		OrderItems: orderItems,
 	}
 }
 
 // GetSignBytes encodes the message for signing
-func (msg MsgNewOrder) GetSignBytes() []byte {
+func (msg MsgNewOrders) GetSignBytes() []byte {
 	b, err := json.Marshal(msg)
 	if err != nil {
 		panic(err)
@@ -106,10 +101,10 @@ func (msg MsgNewOrder) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
-func (MsgNewOrder) Route() string            { return "" }
-func (MsgNewOrder) Type() string             { return "" }
-func (MsgNewOrder) ValidateBasic() Error     { return nil }
-func (MsgNewOrder) GetSigners() []AccAddress { return nil }
+func (MsgNewOrders) Route() string            { return "" }
+func (MsgNewOrders) Type() string             { return "" }
+func (MsgNewOrders) ValidateBasic() Error     { return nil }
+func (MsgNewOrders) GetSigners() []AccAddress { return nil }
 
 type MsgCancelOrder struct {
 	Sender  AccAddress `json:"sender"`

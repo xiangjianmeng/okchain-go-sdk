@@ -60,15 +60,32 @@ func CheckSendParams(fromInfo keys.Info, passWd, toAddr string) error {
 	return nil
 }
 
-func CheckNewOrderParams(fromInfo keys.Info, passWd, product, side string) error {
+func CheckNewOrderParams(fromInfo keys.Info, passWd string, products, sides, prices, quantities []string) error {
 	if err := CheckKeyParams(fromInfo, passWd); err != nil {
 		return err
 	}
-	if len(product) == 0 {
+
+	productsLen := len(products)
+	if productsLen == 0 {
 		return errors.New("no product input")
 	}
-	if side != "BUY" && side != "SELL" {
-		return errors.New(`side can only be "BUY" or "SELL"`)
+
+	if len(sides) != productsLen {
+		return errors.New("invalid param side counts")
+	}
+
+	if len(prices) != productsLen {
+		return errors.New("invalid param price counts")
+	}
+
+	if len(quantities) != productsLen {
+		return errors.New("invalid param quantity counts")
+	}
+
+	for _, side := range sides {
+		if side != "BUY" && side != "SELL" {
+			return errors.New(`side must only be "BUY" or "SELL"`)
+		}
 	}
 
 	return nil

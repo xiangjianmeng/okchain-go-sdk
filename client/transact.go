@@ -7,6 +7,7 @@ import (
 	"github.com/okex/okchain-go-sdk/types"
 	"github.com/okex/okchain-go-sdk/types/tx"
 	"github.com/okex/okchain-go-sdk/utils"
+	"strings"
 )
 
 // broadcast mode
@@ -26,9 +27,9 @@ func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, mem
 		return types.TxResponse{}, fmt.Errorf("err : parse Address [%s] error: %s", toAddr, err)
 	}
 
-	coins, err := utils.ParseCoins(coinsStr)
+	coins, err := utils.ParseDecCoins(coinsStr)
 	if err != nil {
-		return types.TxResponse{}, fmt.Errorf("err : parse Coins [%s] error: %s", coinsStr, err)
+		return types.TxResponse{}, fmt.Errorf("err : parse DecCoins [%s] error: %s", coinsStr, err)
 	}
 
 	msg := types.NewMsgTokenSend(fromInfo.GetAddress(), to, coins)
@@ -41,12 +42,18 @@ func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, mem
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, product, side, price, quantity, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
-	if err := transact_params.CheckNewOrderParams(fromInfo, passWd, product, side); err != nil {
+func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, products, sides, prices, quantities, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	productStrs := strings.Split(products, ",")
+	sideStrs := strings.Split(sides, ",")
+	priceStrs := strings.Split(prices, ",")
+	quantityStrs := strings.Split(quantities, ",")
+	if err := transact_params.CheckNewOrderParams(fromInfo, passWd, productStrs, sideStrs, priceStrs, quantityStrs);
+		err != nil {
 		return types.TxResponse{}, err
 	}
 
-	msg := types.NewMsgNewOrder(fromInfo.GetAddress(), product, side, price, quantity)
+	orderItems := types.BuildOrderItems(productStrs, sideStrs, priceStrs, quantityStrs)
+	msg := types.NewMsgNewOrders(fromInfo.GetAddress(), orderItems)
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {
