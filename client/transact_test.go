@@ -200,7 +200,7 @@ func TestOKChainClient_RegisterProxy(t *testing.T) {
 	assertNotEqual(t, err, nil)
 
 	sequence := accInfo.GetSequence()
-	res, err := cli.Delegate(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	res, err := cli.Delegate(fromInfo, passWd, "102.4okt", "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 
 	sequence++
@@ -231,7 +231,7 @@ func TestOKChainClient_BindProxy(t *testing.T) {
 	assertNotEqual(t, err, nil)
 
 	sequence := accInfo.GetSequence()
-	res, err := cli.Delegate(valAcc, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	res, err := cli.Delegate(valAcc, passWd, "102.4okt", "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 
 	sequence++
@@ -245,7 +245,7 @@ func TestOKChainClient_BindProxy(t *testing.T) {
 	assertNotEqual(t, err, nil)
 
 	sequence = accInfo.GetSequence()
-	res, err = cli.Delegate(fromInfo, passWd, "10.24okt", "my memo", accInfo.GetAccountNumber(), sequence)
+	res, err = cli.Delegate(fromInfo, passWd, "102.4okt", "my memo", accInfo.GetAccountNumber(), sequence)
 	assertNotEqual(t, err, nil)
 
 	sequence++
