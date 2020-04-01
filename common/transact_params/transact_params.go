@@ -35,6 +35,15 @@ func CheckVoteParams(fromInfo keys.Info, passWd string, valAddrs []string) error
 		return errors.New("no validator address input")
 	}
 
+	// check duplicated
+	filter := make(map[string]struct{}, len(valAddrs))
+	for _, valAddr := range valAddrs {
+		if _, ok := filter[valAddr]; ok {
+			return fmt.Errorf("validator address: %s is duplicated", valAddr)
+		}
+		filter[valAddr] = struct{}{}
+	}
+
 	return nil
 }
 

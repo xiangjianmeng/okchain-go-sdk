@@ -127,7 +127,7 @@ func (cli *OKChainClient) Unbond(fromInfo keys.Info, passWd, coinsStr, memo stri
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// vote to the validators
+// Vote votes to the some specific validators
 func (cli *OKChainClient) Vote(fromInfo keys.Info, passWd string, valAddrsStr []string, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckVoteParams(fromInfo, passWd, valAddrsStr); err != nil {
 		return types.TxResponse{}, err

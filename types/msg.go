@@ -248,6 +248,7 @@ type MsgVote struct {
 	ValAddrs []ValAddress `json:"validator_addresses"`
 }
 
+// NewMsgVote creates a msg of multi voting
 func NewMsgVote(delAddr AccAddress, valAddrs []ValAddress) MsgVote {
 	return MsgVote{
 		DelAddr:  delAddr,
