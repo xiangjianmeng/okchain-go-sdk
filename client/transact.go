@@ -42,7 +42,7 @@ func (cli *OKChainClient) Send(fromInfo keys.Info, passWd, toAddr, coinsStr, mem
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, products, sides, prices, quantities, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+func (cli *OKChainClient) NewOrders(fromInfo keys.Info, passWd, products, sides, prices, quantities, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	productStrs := strings.Split(products, ",")
 	sideStrs := strings.Split(sides, ",")
 	priceStrs := strings.Split(prices, ",")
@@ -64,12 +64,13 @@ func (cli *OKChainClient) NewOrder(fromInfo keys.Info, passWd, products, sides, 
 
 }
 
-func (cli *OKChainClient) CancelOrder(fromInfo keys.Info, passWd, orderID, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
-	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
+func (cli *OKChainClient) CancelOrders(fromInfo keys.Info, passWd, orderIds, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
+	orderIdStrs := strings.Split(orderIds, ",")
+	if err := transact_params.CheckCancelOrderParams(fromInfo, passWd, orderIdStrs); err != nil {
 		return types.TxResponse{}, err
 	}
 
-	msg := types.NewMsgCancelOrder(fromInfo.GetAddress(), orderID)
+	msg := types.NewMsgCancelOrders(fromInfo.GetAddress(), orderIdStrs)
 
 	stdBytes, err := tx.BuildAndSignAndEncodeStdTx(fromInfo.GetName(), passWd, memo, []types.Msg{msg}, accNum, seqNum)
 	if err != nil {

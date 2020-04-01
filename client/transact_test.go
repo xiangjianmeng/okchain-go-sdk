@@ -45,7 +45,7 @@ func TestOKChainClient_NewOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.NewOrder(
+	res, err := cli.NewOrders(
 		fromInfo,
 		passWd,
 		"xxb-031_okt,xxb-031_okt,xxb-031_okt",
@@ -57,7 +57,7 @@ func TestOKChainClient_NewOrder(t *testing.T) {
 		accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)
-	fmt.Println("orderId:", getOrderIdsFromResponse(&res))
+	fmt.Println("orderIds:", getOrderIdsFromResponse(&res))
 }
 
 func TestOKChainClient_CancelOrder(t *testing.T) {
@@ -67,7 +67,8 @@ func TestOKChainClient_CancelOrder(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	res, err := cli.CancelOrder(fromInfo, passWd, "ID0000001838-1", "my memo",
+	orderIds := "ID0000003438-1,ID0000003438-3"
+	res, err := cli.CancelOrders(fromInfo, passWd, orderIds, "my memo",
 		accInfo.GetAccountNumber(), accInfo.GetSequence())
 	assertNotEqual(t, err, nil)
 	fmt.Println(res)

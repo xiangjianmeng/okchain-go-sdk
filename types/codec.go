@@ -17,7 +17,7 @@ func RegisterMsgCdc(cdc *amino.Codec) {
 	cdc.RegisterInterface((*Msg)(nil), nil)
 	cdc.RegisterConcrete(MsgSend{}, "okchain/token/MsgTransfer", nil)
 	cdc.RegisterConcrete(MsgNewOrders{}, "okchain/order/MsgNew", nil)
-	cdc.RegisterConcrete(MsgCancelOrder{}, "okchain/order/MsgCancel", nil)
+	cdc.RegisterConcrete(MsgCancelOrders{}, "okchain/order/MsgCancel", nil)
 	cdc.RegisterConcrete(MsgMultiSend{}, "okchain/token/MsgMultiTransfer", nil)
 	cdc.RegisterConcrete(MsgMint{}, "okchain/token/MsgMint", nil)
 	cdc.RegisterConcrete(MsgDelegate{}, "okchain/staking/MsgDelegate", nil)

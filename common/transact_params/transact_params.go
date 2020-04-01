@@ -91,6 +91,24 @@ func CheckNewOrderParams(fromInfo keys.Info, passWd string, products, sides, pri
 	return nil
 }
 
+func CheckCancelOrderParams(fromInfo keys.Info, passWd string, orderIds []string) error {
+	if err := CheckKeyParams(fromInfo, passWd); err != nil {
+		return err
+	}
+
+	// check duplicated
+	filter := make(map[string]struct{})
+	for _, id := range orderIds {
+		if _, ok := filter[id]; ok {
+			return fmt.Errorf("orderId: %s is duplicated", id)
+		}
+
+		filter[id] = struct{}{}
+	}
+
+	return nil
+}
+
 func checkAccuracyOfStr(num string, accuracy int) bool {
 	num = strings.TrimSpace(num)
 	strs := strings.Split(num, ".")

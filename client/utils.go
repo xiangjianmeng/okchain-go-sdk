@@ -103,7 +103,6 @@ func getOrderIdsFromResponse(txResp *types.TxResponse) (orderIds []string) {
 
 					for _, res := range orderRes {
 						orderIds = append(orderIds, res.OrderID)
-
 					}
 				}
 			}

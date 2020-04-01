@@ -84,7 +84,7 @@ type MsgNewOrders struct {
 	OrderItems []OrderItem `json:"order_items"`
 }
 
-// NewMsgNewOrders is a constructor function for MsgNewOrder
+// NewMsgNewOrders is a constructor function for MsgNewOrders
 func NewMsgNewOrders(sender AccAddress, orderItems []OrderItem) MsgNewOrders {
 	return MsgNewOrders{
 		Sender:     sender,
@@ -106,21 +106,21 @@ func (MsgNewOrders) Type() string             { return "" }
 func (MsgNewOrders) ValidateBasic() Error     { return nil }
 func (MsgNewOrders) GetSigners() []AccAddress { return nil }
 
-type MsgCancelOrder struct {
-	Sender  AccAddress `json:"sender"`
-	OrderId string     `json:"order_id"`
+type MsgCancelOrders struct {
+	Sender   AccAddress `json:"sender"`
+	OrderIds []string   `json:"order_ids"`
 }
 
-func NewMsgCancelOrder(sender AccAddress, orderId string) MsgCancelOrder {
-	msgCancelOrder := MsgCancelOrder{
-		Sender:  sender,
-		OrderId: orderId,
+// NewMsgCancelOrders is a constructor function for MsgCancelOrders
+func NewMsgCancelOrders(sender AccAddress, orderIdItems []string) MsgCancelOrders {
+	return MsgCancelOrders{
+		Sender:   sender,
+		OrderIds: orderIdItems,
 	}
-	return msgCancelOrder
 }
 
 // GetSignBytes encodes the message for signing
-func (msg MsgCancelOrder) GetSignBytes() []byte {
+func (msg MsgCancelOrders) GetSignBytes() []byte {
 	b, err := json.Marshal(msg)
 	if err != nil {
 		panic(err)
@@ -128,10 +128,10 @@ func (msg MsgCancelOrder) GetSignBytes() []byte {
 	return MustSortJSON(b)
 }
 
-func (MsgCancelOrder) Route() string            { return "" }
-func (MsgCancelOrder) Type() string             { return "" }
-func (MsgCancelOrder) ValidateBasic() Error     { return nil }
-func (MsgCancelOrder) GetSigners() []AccAddress { return nil }
+func (MsgCancelOrders) Route() string            { return "" }
+func (MsgCancelOrders) Type() string             { return "" }
+func (MsgCancelOrders) ValidateBasic() Error     { return nil }
+func (MsgCancelOrders) GetSigners() []AccAddress { return nil }
 
 type MsgMultiSend struct {
 	From      AccAddress     `json:"from"`
