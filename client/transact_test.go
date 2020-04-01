@@ -171,8 +171,7 @@ func TestOKChainClient_CreateValidator(t *testing.T) {
 	accInfo, err := cli.GetAccountInfoByAddr(fromInfo.GetAddress().String())
 	assertNotEqual(t, err, nil)
 
-	//pubkeyStr := "okchainvalconspub1zcjduepqghrtvkngejwese62wg49ewskz4r93vkyj3md5mg5rf7twcc6jduqpqw66q"
-	pubkeyStr := "okchainvalconspub1zcjduepqaq86fqghsvk2xszx0vqh7ctyl3gjcxxw5tgnggqjetw2lpe8vfhsdf3mg2"
+	pubkeyStr := "okchainvalconspub1zcjduepqghrtvkngejwese62wg49ewskz4r93vkyj3md5mg5rf7twcc6jduqpqw66q"
 	res, err := cli.CreateValidator(fromInfo, passWd, pubkeyStr, "my moniker", "my identity",
 		"my website", "my details", "1okt", "my memo",
 		accInfo.GetAccountNumber(), accInfo.GetSequence())

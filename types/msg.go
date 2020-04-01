@@ -312,33 +312,30 @@ func (MsgUnjail) ValidateBasic() Error     { return nil }
 func (MsgUnjail) GetSigners() []AccAddress { return nil }
 
 type MsgCreateValidator struct {
-	Description       Description     `json:"description"`
-	Commission        CommissionRates `json:"commission"`
-	MinSelfDelegation Coin            `json:"min_self_delegation"`
-	DelegatorAddress  AccAddress      `json:"delegator_address"`
-	ValidatorAddress  ValAddress      `json:"validator_address"`
-	PubKey            crypto.PubKey   `json:"pubkey"`
+	Description       Description   `json:"description"`
+	MinSelfDelegation DecCoin       `json:"min_self_delegation"`
+	DelegatorAddress  AccAddress    `json:"delegator_address"`
+	ValidatorAddress  ValAddress    `json:"validator_address"`
+	PubKey            crypto.PubKey `json:"pubkey"`
 }
 
 type msgCreateValidatorJSON struct {
-	Description       Description     `json:"description"`
-	Commission        CommissionRates `json:"commission"`
-	MinSelfDelegation Coin            `json:"min_self_delegation"`
-	DelegatorAddress  AccAddress      `json:"delegator_address"`
-	ValidatorAddress  ValAddress      `json:"validator_address"`
-	PubKey            string          `json:"pubkey"`
+	Description       Description `json:"description"`
+	MinSelfDelegation DecCoin     `json:"min_self_delegation"`
+	DelegatorAddress  AccAddress  `json:"delegator_address"`
+	ValidatorAddress  ValAddress  `json:"validator_address"`
+	PubKey            string      `json:"pubkey"`
 }
 
-func NewMsgCreateValidator(valAddr ValAddress, pubKey crypto.PubKey, description Description, minSelfDelegation Coin,
+// NewMsgCreateValidator creates a msg of create-validator
+// Delegator address and validator address are the same
+func NewMsgCreateValidator(valAddr ValAddress, pubKey crypto.PubKey, description Description, minSelfDelegation DecCoin,
 ) MsgCreateValidator {
-
 	return MsgCreateValidator{
-		Description:      description,
-		DelegatorAddress: AccAddress(valAddr),
-		ValidatorAddress: valAddr,
-		PubKey:           pubKey,
-		// fix the commission
-		Commission:        NewCommissionRates(ZeroDec(), ZeroDec(), ZeroDec()),
+		Description:       description,
+		DelegatorAddress:  AccAddress(valAddr),
+		ValidatorAddress:  valAddr,
+		PubKey:            pubKey,
 		MinSelfDelegation: minSelfDelegation,
 	}
 }
@@ -348,11 +345,10 @@ func (msg MsgCreateValidator) GetSignBytes() []byte {
 	return MustSortJSON(MsgCdc.MustMarshalJSON(msg))
 }
 
-// useful for the signing of msg MsgCreateValidator
+// MarshalJSON is useful for the signing of msg MsgCreateValidator
 func (msg MsgCreateValidator) MarshalJSON() ([]byte, error) {
 	return json.Marshal(msgCreateValidatorJSON{
 		Description:       msg.Description,
-		Commission:        msg.Commission,
 		DelegatorAddress:  msg.DelegatorAddress,
 		ValidatorAddress:  msg.ValidatorAddress,
 		PubKey:            MustBech32ifyConsPub(msg.PubKey),
@@ -368,16 +364,14 @@ func (MsgCreateValidator) GetSigners() []AccAddress { return nil }
 
 type MsgEditValidator struct {
 	Description
-	ValidatorAddress  ValAddress `json:"address"`
-	MinSelfDelegation *Int       `json:"min_self_delegation"`
+	ValidatorAddress ValAddress `json:"address"`
 }
 
 // NewMsgEditValidator creates a msg of edit-validator
 func NewMsgEditValidator(valAddr ValAddress, description Description) MsgEditValidator {
 	return MsgEditValidator{
-		Description:       description,
-		ValidatorAddress:  valAddr,
-		MinSelfDelegation: nil,
+		Description:      description,
+		ValidatorAddress: valAddr,
 	}
 }
 

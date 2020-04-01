@@ -196,7 +196,7 @@ func (cli *OKChainClient) MultiSend(fromInfo keys.Info, passWd string, transfers
 	return cli.broadcast(stdBytes, BroadcastBlock)
 }
 
-// create a new validator
+// CreateValidator creates a new validator
 func (cli *OKChainClient) CreateValidator(fromInfo keys.Info, passWd, pubkeyStr, moniker, identity, website, details, minSelfDelegationStr, memo string, accNum, seqNum uint64) (types.TxResponse, error) {
 	if err := transact_params.CheckKeyParams(fromInfo, passWd); err != nil {
 		return types.TxResponse{}, err
@@ -209,7 +209,7 @@ func (cli *OKChainClient) CreateValidator(fromInfo keys.Info, passWd, pubkeyStr,
 
 	description := types.NewDescription(moniker, identity, website, details)
 
-	minSelfDelegationCoin, err := utils.ParseCoin(minSelfDelegationStr)
+	minSelfDelegationCoin, err := utils.ParseDecCoin(minSelfDelegationStr)
 	if err != nil {
 		return types.TxResponse{}, err
 	}
